@@ -9,23 +9,25 @@ import (
 	"reflect"
 )
 
-// type IBinanceSignature interface {
-// 	Sign() error
-// }
+type IBinanceSignature[T any] interface {
+	Sign(payload []byte, key []byte) string
+	CreateBinanceSignature(data *url.Values) string
+	GetQueryStringFromStructType(m *T) url.Values
+}
 
-type BinanceSignature struct {
+type binanceSignature[T any] struct {
 	apiKey    string
 	secretKey string
 }
 
-func NewBinanceSignature(apiKey, secretKey string) *BinanceSignature {
-	return &BinanceSignature{
+func NewBinanceNonWsSignature[T any](apiKey, secretKey string) IBinanceSignature[T] {
+	return &binanceSignature[T]{
 		apiKey:    apiKey,
 		secretKey: secretKey,
 	}
 }
 
-func GetQueryStringFromStructType[T any](m *T) url.Values {
+func (b *binanceSignature[T]) GetQueryStringFromStructType(m *T) url.Values {
 	st := reflect.TypeOf(m).Elem()
 	v := reflect.ValueOf(m).Elem()
 	q := url.Values{}
@@ -37,14 +39,14 @@ func GetQueryStringFromStructType[T any](m *T) url.Values {
 	return q
 }
 
-func CreateBinanceSignature(data *url.Values, binanceSecretKey string) string {
+func (b *binanceSignature[T]) CreateBinanceSignature(data *url.Values) string {
 	payload := data.Encode()
-	encodeString := Sign([]byte(payload), []byte(binanceSecretKey))
+	encodeString := b.Sign([]byte(payload), []byte(b.secretKey))
 	encodeData := fmt.Sprintf("%v&signature=%v", data.Encode(), encodeString)
 	return encodeData
 }
 
-func Sign(payload []byte, key []byte) string {
+func (b *binanceSignature[T]) Sign(payload []byte, key []byte) string {
 	mac := hmac.New(sha256.New, key)
 	mac.Write(payload)
 	return hex.EncodeToString(mac.Sum(nil))
