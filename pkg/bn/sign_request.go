@@ -14,6 +14,8 @@ type IBinanceSignature[T any] interface {
 	GetSignature(key []byte) string
 	GetQueryStringBinanceSignature() string
 	CreateQueryStringFromPayload(m *T) url.Values
+	SetExcludeFields(fields []string)
+	SetExcludeField(field string)
 }
 
 type binanceSignature[T any] struct {
