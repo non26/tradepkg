@@ -13,7 +13,7 @@ import (
 type IBinanceSignature[T any] interface {
 	GetSignature(key []byte) string
 	GetQueryStringBinanceSignature() string
-	CreateQueryStringFromPayload(m *T) url.Values
+	CreateQueryStringFromPayload(m *T) *binanceSignature[T]
 	SetExcludeFields(fields []string)
 	SetExcludeField(field string)
 }
@@ -34,7 +34,7 @@ func NewBinanceNonWsSignature[T any](apiKey, secretKey string) IBinanceSignature
 	}
 }
 
-func (b *binanceSignature[T]) CreateQueryStringFromPayload(m *T) url.Values {
+func (b *binanceSignature[T]) CreateQueryStringFromPayload(m *T) *binanceSignature[T] {
 	st := reflect.TypeOf(m).Elem()
 	v := reflect.ValueOf(m).Elem()
 	q := url.Values{}
@@ -46,7 +46,7 @@ func (b *binanceSignature[T]) CreateQueryStringFromPayload(m *T) url.Values {
 		}
 	}
 	b.encodepayload = q.Encode()
-	return q
+	return b
 }
 
 func (b *binanceSignature[T]) isExcludeField(field string) bool {
