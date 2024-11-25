@@ -11,7 +11,7 @@ import (
 )
 
 type IBinanceSignature[T any] interface {
-	GetSignature(key []byte) string
+	GetSignature() string
 	GetQueryStringBinanceSignature() string
 	CreateQueryStringFromPayload(m *T) *binanceSignature[T]
 	SetExcludeFields(fields []string)
@@ -66,9 +66,9 @@ func (b *binanceSignature[T]) GetQueryStringBinanceSignature() string {
 	return encodeData
 }
 
-func (b *binanceSignature[T]) GetSignature(key []byte) string {
+func (b *binanceSignature[T]) GetSignature() string {
 	payload := []byte(b.encodepayload)
-	mac := hmac.New(sha256.New, key)
+	mac := hmac.New(sha256.New, []byte(b.secretKey))
 	mac.Write(payload)
 	b.bnsign = hex.EncodeToString(mac.Sum(nil))
 	return b.bnsign
