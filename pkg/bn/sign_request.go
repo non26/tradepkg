@@ -4,7 +4,6 @@ import (
 	"crypto/ed25519"
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"net/url"
@@ -84,8 +83,8 @@ func (b *binanceSignature[T]) GetSignature() string {
 func (b *binanceSignature[T]) GetWSSignature() string {
 	privateKey := ed25519.PrivateKey(b.secretKey)
 	signature := ed25519.Sign(privateKey, []byte(b.encodepayload))
-	base64Signature := base64.StdEncoding.EncodeToString(signature)
-	return base64Signature
+	// base64Signature := base64.StdEncoding.EncodeToString(signature)
+	return string(signature)
 }
 
 func (b *binanceSignature[T]) GetEncodePayload() string {
