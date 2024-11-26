@@ -4,7 +4,10 @@ import (
 	"crypto/ed25519"
 	"crypto/hmac"
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/base64"
 	"encoding/hex"
+	"encoding/pem"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -46,8 +49,15 @@ func (b *binanceSignature[T]) CreateQueryStringFromPayload(m *T) *binanceSignatu
 	for i := 0; i < st.NumField(); i++ {
 		field := st.Field(i).Tag.Get("json")
 		if !b.isExcludeField(field) {
-			value := v.FieldByIndex([]int{i}).String()
-			q.Add(field, value)
+			value := v.FieldByIndex([]int{i})
+			if value.Kind() == reflect.String {
+				q.Add(field, value.String())
+				continue
+			}
+			if value.Kind() == reflect.Int64 {
+				q.Add(field, fmt.Sprintf("%d", value.Int()))
+				continue
+			}
 		}
 	}
 	b.urlValue = q
@@ -92,4 +102,23 @@ func (b *binanceSignature[T]) GetEncodePayload() string {
 }
 func (b *binanceSignature[T]) GetURLValue() url.Values {
 	return b.urlValue
+}
+
+func Ed25519(secretKey string, data string) (*string, error) {
+	block, _ := pem.Decode([]byte(secretKey))
+	if block == nil {
+		return nil, fmt.Errorf("Ed25519 pem.Decode failed, invalid pem format secretKey")
+	}
+	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("Ed25519 call ParsePKCS8PrivateKey failed, error=%v", err.Error())
+	}
+	ed25519PrivateKey, ok := privateKey.(ed25519.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("Ed25519 convert PrivateKey failed")
+	}
+	pk := ed25519.PrivateKey(ed25519PrivateKey)
+	signature := ed25519.Sign(pk, []byte(data))
+	encodedSignature := base64.StdEncoding.EncodeToString(signature)
+	return &encodedSignature, nil
 }
