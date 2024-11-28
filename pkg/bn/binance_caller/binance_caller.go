@@ -58,24 +58,26 @@ func (c *callBinance[Q, P]) CallBinance(
 	api_key string,
 	service_name string,
 ) (*P, error) {
-	request.PrepareRequest()
 
 	err := c.http_request.NewBinanceHttpRequest(fmt.Sprintf("%v%v", base_url, end_point))
 	if err != nil {
 		return nil, err
 	}
 
+	request.PrepareRequest()
 	data := request.GetData().(*Q)
 	signature, err := c.http_request.CreateRequestSignUrl(data, secret_key)
 	if err != nil {
 		return nil, err
 	}
+
 	switch method {
 	case http.MethodPost:
 		c.http_request.RequestPostMethod(signature)
 	default:
 		c.http_request.RequestGetMethod(signature)
 	}
+
 	c.http_request.AddHeader(api_key)
 
 	c.http_client.SetClient(c.http_transport.GetTransport())
