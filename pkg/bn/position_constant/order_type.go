@@ -1,4 +1,4 @@
-package bncommon
+package positionconstant
 
 import "strings"
 
