@@ -1,4 +1,4 @@
-package binanetransport
+package binancetransport
 
 import "net/http"
 

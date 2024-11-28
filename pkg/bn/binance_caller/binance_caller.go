@@ -8,7 +8,7 @@ import (
 	binancemodel "github.com/non26/tradepkg/pkg/bn/binance_model"
 	binancerequest "github.com/non26/tradepkg/pkg/bn/binance_request"
 	binanceresponse "github.com/non26/tradepkg/pkg/bn/binance_response"
-	binanetransport "github.com/non26/tradepkg/pkg/bn/binane_transport"
+	binanetransport "github.com/non26/tradepkg/pkg/bn/binance_transport"
 )
 
 /*
