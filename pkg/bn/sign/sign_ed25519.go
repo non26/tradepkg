@@ -1,4 +1,4 @@
-package bn
+package sign
 
 import (
 	"crypto/ed25519"
@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"fmt"
+
+	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
 type SignEd25519[T any] struct {
@@ -20,7 +22,7 @@ func NewSignEd25519[T any](privateKey string) IBinanceSignature[T] {
 }
 
 func (s *SignEd25519[T]) Sign(m *T, except_fields ...string) (string, error) {
-	queryString := CreateQueryStringFrom(m, except_fields...)
+	queryString := utils.CreateQueryStringFrom(m, except_fields...)
 	s.queryString = queryString
 	//private example
 	//  "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIKwzSGBlYbCE5cvr7ggQDU//tsiurzHbZSj7MM5ai8Aa\n-----END PRIVATE KEY-----"
@@ -55,5 +57,5 @@ func (s *SignEd25519[T]) GetQueryStringBinanceSignature(m *T, except_fields ...s
 	if err != nil {
 		return "", err
 	}
-	return GetQueryStringBinanceSignature(s.queryString, signatureBase64), nil
+	return utils.GetQueryStringBinanceSignature(s.queryString, signatureBase64), nil
 }

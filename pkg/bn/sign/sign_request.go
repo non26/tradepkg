@@ -1,4 +1,4 @@
-package bn
+package sign
 
 type IBinanceSignature[T any] interface {
 	Sign(m *T, except_fields ...string) (string, error)

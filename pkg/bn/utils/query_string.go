@@ -1,4 +1,4 @@
-package bn
+package utils
 
 import (
 	"fmt"
