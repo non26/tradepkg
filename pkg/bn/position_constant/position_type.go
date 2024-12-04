@@ -2,6 +2,9 @@ package positionconstant
 
 import "strings"
 
+var LONG = "LONG"
+var SHORT = "SHORT"
+
 type IPositionSide interface {
 	Long() string
 	Short() string
@@ -36,7 +39,7 @@ func (p *positionSide) positionSideTransform(side string) string {
 
 func NewPositionSide() IPositionSide {
 	return &positionSide{
-		long:  "LONG",
-		short: "SHORT",
+		long:  LONG,
+		short: SHORT,
 	}
 }

@@ -2,6 +2,11 @@ package positionconstant
 
 import "strings"
 
+var MARKET = "MARKET"
+var LIMIT = "LIMIT"
+var STOP = "STOP"
+var STOP_LIMIT = "STOP_LIMIT"
+
 type IOrderType interface {
 	Market() string
 	Limit() string
@@ -58,9 +63,9 @@ func (o *orderType) orderTypeTransform(order_type string) string {
 
 func NewOrderType() IOrderType {
 	return &orderType{
-		market:    "MARKET",
-		limit:     "LIMIT",
-		stop:      "STOP",
-		stopLimit: "STOP_LIMIT",
+		market:    MARKET,
+		limit:     LIMIT,
+		stop:      STOP,
+		stopLimit: STOP_LIMIT,
 	}
 }

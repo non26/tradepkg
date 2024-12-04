@@ -2,6 +2,9 @@ package positionconstant
 
 import "strings"
 
+var BUY = "BUY"
+var SELL = "SELL"
+
 type ISide interface {
 	Buy() string
 	Sell() string
@@ -36,7 +39,7 @@ func (s *side) sideTrasform(side string) string {
 
 func NewSide() ISide {
 	return &side{
-		buy:  "BUY",
-		sell: "SELL",
+		buy:  BUY,
+		sell: SELL,
 	}
 }
