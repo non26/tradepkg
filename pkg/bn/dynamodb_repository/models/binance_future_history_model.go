@@ -1,8 +1,8 @@
 package dynamodbrepository
 
 type BinanceFutureHistory struct {
-	Id            string `dynamodbav:"id"`
-	ExchangeId    int    `dynamodbav:"exchange_id"`
+	Id string `dynamodbav:"id"`
+	// ExchangeId    int    `dynamodbav:"exchange_id"`
 	ClientId      string `dynamodbav:"client_id"`
 	Pnl           string `dynamodb:"pnl"`
 	Leverage      string `dynamodb:"leverage"`

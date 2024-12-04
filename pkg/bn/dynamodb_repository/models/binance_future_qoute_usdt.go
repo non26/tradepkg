@@ -9,8 +9,9 @@ import (
 )
 
 type BinanceFutureQouteUSDT struct {
-	Symbol         string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
-	CountingSymbol int    `dynamodb:"counting_symbol" dynamodbav:"counting_symbol"`
+	Symbol          string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
+	CurrentLeverage string `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
+	CountingSymbol  int    `dynamodb:"counting_symbol" dynamodbav:"counting_symbol"`
 }
 
 type counting int

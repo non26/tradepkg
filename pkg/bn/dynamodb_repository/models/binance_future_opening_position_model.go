@@ -9,9 +9,9 @@ import (
 )
 
 type BinanceFutureOpeningPosition struct {
-	Symbol             string `dynamodbav:"symbol" dynamodb:"symbol"` // primary key
-	ClientId           string `dynamodbav:"client_id" dynamodb:"client_id"`
-	ExchangeId         int    `dynamodbav:"exchange_id" dynamodb:"exchange_id"`
+	Symbol   string `dynamodbav:"symbol" dynamodb:"symbol"` // primary key
+	ClientId string `dynamodbav:"client_id" dynamodb:"client_id"`
+	// ExchangeId         int    `dynamodbav:"exchange_id" dynamodb:"exchange_id"`
 	Leverage           string `dynamodbav:"leverage" dynamodb:"leverage"`
 	PositionSide       string `dynamodbav:"position_side" dynamodb:"position_side"`
 	Side               string `dynamodbav:"side" dynamodb:"side"`
@@ -37,9 +37,9 @@ func (b *BinanceFutureOpeningPosition) GetKeyByClientID() map[string]types.Attri
 	}
 }
 
-func newBinanceFutureOpeningPosition() *BinanceFutureOpeningPosition {
+func NewBinanceFutureOpeningPosition() *BinanceFutureOpeningPosition {
 	return &BinanceFutureOpeningPosition{
-		ExchangeId: 1,
+		// ExchangeId: 1,
 	}
 }
 
@@ -50,7 +50,7 @@ type BinanceFutureOpeningPositionTable struct {
 
 func NewBinanceFutureOpeningPositionTable() *BinanceFutureOpeningPositionTable {
 	return &BinanceFutureOpeningPositionTable{
-		BinanceFutureOpeningPosition: newBinanceFutureOpeningPosition(),
+		BinanceFutureOpeningPosition: NewBinanceFutureOpeningPosition(),
 	}
 }
 
@@ -58,12 +58,12 @@ func (b *BinanceFutureOpeningPositionTable) GetTableName() string {
 	return utils.GetStructTagValueByIndex(reflect.TypeOf(b).Elem(), "table", 0)
 }
 
-func (b *BinanceFutureOpeningPositionTable) GetBuyCreatedAt() string {
-	return b.time()
+func (b *BinanceFutureOpeningPositionTable) SetBuyCreatedAt() {
+	b.BuyOrderCreatedAt = b.time()
 }
 
-func (b *BinanceFutureOpeningPositionTable) GetSellCreatedAt() string {
-	return b.time()
+func (b *BinanceFutureOpeningPositionTable) SetSellCreatedAt() {
+	b.SellOrderCreatedAt = b.time()
 }
 
 func (b *BinanceFutureOpeningPositionTable) time() string {
