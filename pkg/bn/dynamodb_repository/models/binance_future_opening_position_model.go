@@ -9,9 +9,9 @@ import (
 )
 
 type BinanceFutureOpeningPosition struct {
-	Symbol   string `dynamodbav:"symbol" dynamodb:"symbol"` // primary key
-	ClientId string `dynamodbav:"client_id" dynamodb:"client_id"`
-	// ExchangeId         int    `dynamodbav:"exchange_id" dynamodb:"exchange_id"`
+	Symbol             string `dynamodbav:"symbol" dynamodb:"symbol"` // primary key
+	ClientId           string `dynamodbav:"client_id" dynamodb:"client_id"`
+	OrderType          string `dynamodbav:"order_type" dynamodb:"order_type"`
 	Leverage           string `dynamodbav:"leverage" dynamodb:"leverage"`
 	PositionSide       string `dynamodbav:"position_side" dynamodb:"position_side"`
 	Side               string `dynamodbav:"side" dynamodb:"side"`
@@ -34,6 +34,19 @@ func (b *BinanceFutureOpeningPosition) GetKeyBySymbol() map[string]types.Attribu
 func (b *BinanceFutureOpeningPosition) GetKeyByClientID() map[string]types.AttributeValue {
 	return map[string]types.AttributeValue{
 		"client_id": &types.AttributeValueMemberS{Value: b.ClientId},
+	}
+}
+
+func (b *BinanceFutureOpeningPosition) GetKeyByPositionSide() map[string]types.AttributeValue {
+	return map[string]types.AttributeValue{
+		"position_side": &types.AttributeValueMemberS{Value: b.PositionSide},
+	}
+}
+
+func (b *BinanceFutureOpeningPosition) GetKeyByPositionSideAndSymbol() map[string]types.AttributeValue {
+	return map[string]types.AttributeValue{
+		"position_side": &types.AttributeValueMemberS{Value: b.PositionSide},
+		"symbol":        &types.AttributeValueMemberS{Value: b.Symbol},
 	}
 }
 

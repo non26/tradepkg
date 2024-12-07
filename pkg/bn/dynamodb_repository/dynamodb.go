@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 type dynamodbConfig struct{}
@@ -41,10 +42,12 @@ func NewCredential(accessKeyID, secretAccessKey string) *credential {
 
 type IRepository interface {
 	GetAllOpenOrders(ctx context.Context) ([]models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderBySymbol(ctx context.Context, symbol string) (*models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BinanceFutureOpeningPosition, error)
+	GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BinanceFutureOpeningPosition, error)
+	GetOpenOrderByClientID(ctx context.Context, clientId string) ([]models.BinanceFutureOpeningPosition, error)
+	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BinanceFutureOpeningPosition, error)
 	NewOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
 	DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error
+	DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error
 	// table bn_future_qoute_usdt
 	GetQouteUSDT(ctx context.Context, symbol string) (*models.BinanceFutureQouteUSDT, error)
 	UpdateCountingSymbolQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error

@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) ([]models.BinanceFutureOpeningPosition, error) {
@@ -32,10 +33,10 @@ func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) ([]models.Bin
 	return result, nil
 }
 
-func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol string) (*models.BinanceFutureOpeningPosition, error) {
+func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BinanceFutureOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := &models.BinanceFutureOpeningPosition{}
+	result := []models.BinanceFutureOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.Symbol = symbol
 	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
@@ -53,10 +54,10 @@ func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol st
 	return result, nil
 }
 
-func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_id string) (*models.BinanceFutureOpeningPosition, error) {
+func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_id string) ([]models.BinanceFutureOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := &models.BinanceFutureOpeningPosition{}
+	result := []models.BinanceFutureOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.ClientId = client_id
 	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
@@ -84,6 +85,37 @@ func (d *dynamoDBRepository) DeleteOpenOrderBySymbol(ctx context.Context, symbol
 		return err
 	}
 	return nil
+}
+
+func (d *dynamoDBRepository) DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error {
+	table := models.NewBinanceFutureOpeningPositionTable()
+	_, err := d.dynamodb.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+		TableName: aws.String(table.GetTableName()),
+		Key:       key,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *dynamoDBRepository) GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BinanceFutureOpeningPosition, error) {
+	var err error
+	var response *dynamodb.GetItemOutput
+	result := &models.BinanceFutureOpeningPosition{}
+	table := models.NewBinanceFutureOpeningPositionTable()
+	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+		TableName: aws.String(table.GetTableName()),
+		Key:       key,
+	})
+	if err != nil {
+		return nil, err
+	}
+	err = attributevalue.UnmarshalMap(response.Item, &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func (d *dynamoDBRepository) NewOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error {
