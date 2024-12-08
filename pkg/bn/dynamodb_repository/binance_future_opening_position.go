@@ -2,6 +2,7 @@ package dynamodbrepository
 
 import (
 	"context"
+	"fmt"
 
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 
@@ -129,6 +130,24 @@ func (d *dynamoDBRepository) NewOpenOrder(ctx context.Context, openOrder *models
 		TableName: aws.String(table.GetTableName()),
 		Item:      item,
 	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *dynamoDBRepository) UpdateOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error {
+	table := models.NewBinanceFutureOpeningPositionTable()
+	table.BinanceFutureOpeningPosition = openOrder
+	input := &dynamodb.UpdateItemInput{
+		TableName:        aws.String(table.GetTableName()),
+		Key:              table.GetKeyByPositionSideAndSymbol(),
+		UpdateExpression: aws.String(fmt.Sprintf("set %v = :amount", "amount_q")),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":amount": &types.AttributeValueMemberS{Value: openOrder.AmountQ},
+		},
+	}
+	_, err := d.dynamodb.UpdateItem(ctx, input)
 	if err != nil {
 		return err
 	}

@@ -46,6 +46,7 @@ type IRepository interface {
 	GetOpenOrderByClientID(ctx context.Context, clientId string) ([]models.BinanceFutureOpeningPosition, error)
 	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BinanceFutureOpeningPosition, error)
 	NewOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
+	UpdateOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
 	DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error
 	DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error
 	// table bn_future_qoute_usdt
