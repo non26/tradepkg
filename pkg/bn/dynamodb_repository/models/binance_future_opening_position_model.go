@@ -19,6 +19,7 @@ type BinanceFutureOpeningPosition struct {
 	AmountB            string `dynamodbav:"amount_b" dynamodb:"amount_b"`
 	BuyOrderCreatedAt  string `dynamodbav:"buy_created_at" dynamodb:"buy_created_at"`
 	SellOrderCreatedAt string `dynamodbav:"sell_created_at" dynamodb:"sell_created_at"`
+	WatchingConfig     string `dynamodbav:"watching_config" dynamodb:"watching_config"`
 }
 
 func (b *BinanceFutureOpeningPosition) IsEmpty() bool {
@@ -81,4 +82,34 @@ func (b *BinanceFutureOpeningPositionTable) SetSellCreatedAt() {
 
 func (b *BinanceFutureOpeningPositionTable) time() string {
 	return time.Now().Format(time.RFC3339)
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetLeverageTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Leverage", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetOrderTypeTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "OrderType", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetClientIdTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "ClientId", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetAmountQTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountQ", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetAmountBTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureOpeningPositionTable) GetWatchingConfigTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "WatchingConfig", "dynamodb")
+	return v
 }

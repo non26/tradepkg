@@ -10,8 +10,9 @@ import (
 
 type BinanceFutureQouteUSDT struct {
 	Symbol          string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
-	CurrentLeverage string `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
-	CountingSymbol  int    `dynamodb:"counting_symbol" dynamodbav:"counting_symbol"`
+	CurrentLeverage int    `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
+	CountingLong    int    `dynamodb:"counting_long" dynamodbav:"counting_long"`
+	CountingShort   int    `dynamodb:"counting_short" dynamodbav:"counting_short"`
 }
 
 type counting int
@@ -28,20 +29,32 @@ func newBinanceFutureQouteUSDT() *BinanceFutureQouteUSDT {
 	return &BinanceFutureQouteUSDT{}
 }
 
-func (b *BinanceFutureQouteUSDT) GetNextCounting() counting {
-	return counting(b.CountingSymbol + 1)
+func (b *BinanceFutureQouteUSDT) GetNextCountingLong() counting {
+	return counting(b.CountingLong + 1)
 }
 
-func (b *BinanceFutureQouteUSDT) SetCounting(counting int) {
-	b.CountingSymbol = counting
+func (b *BinanceFutureQouteUSDT) GetNextCountingShort() counting {
+	return counting(b.CountingShort + 1)
+}
+
+func (b *BinanceFutureQouteUSDT) SetCountingLong(counting int) {
+	b.CountingLong = counting
+}
+
+func (b *BinanceFutureQouteUSDT) SetCountingShort(counting int) {
+	b.CountingShort = counting
 }
 
 func (b *BinanceFutureQouteUSDT) GetSymbol() string {
 	return b.Symbol
 }
 
-func (b *BinanceFutureQouteUSDT) GetCounting() int {
-	return b.CountingSymbol
+func (b *BinanceFutureQouteUSDT) GetCountingLong() int {
+	return b.CountingLong
+}
+
+func (b *BinanceFutureQouteUSDT) GetCountingShort() int {
+	return b.CountingShort
 }
 
 func (b *BinanceFutureQouteUSDT) SetSymbol(symbol string) {
@@ -50,6 +63,14 @@ func (b *BinanceFutureQouteUSDT) SetSymbol(symbol string) {
 
 func (b *BinanceFutureQouteUSDT) IsExist() bool {
 	return b.Symbol != ""
+}
+
+func (b *BinanceFutureQouteUSDT) GetCurrentLeverage() int {
+	return b.CurrentLeverage
+}
+
+func (b *BinanceFutureQouteUSDT) SetCurrentLeverage(leverage int) {
+	b.CurrentLeverage = leverage
 }
 
 type BinanceFutureQouteUSTDTable struct {
@@ -78,7 +99,17 @@ func (b *BinanceFutureQouteUSTDTable) GetSymbolTableField() string {
 	return v
 }
 
-func (b *BinanceFutureQouteUSTDTable) GetCountingSymbolTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CountingSymbol", "dynamodb")
+func (b *BinanceFutureQouteUSTDTable) GetCountingLongTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CountingLong", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureQouteUSTDTable) GetCountingShortTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CountingShort", "dynamodb")
+	return v
+}
+
+func (b *BinanceFutureQouteUSTDTable) GetCurrentLeverageTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CurrentLeverage", "dynamodb")
 	return v
 }

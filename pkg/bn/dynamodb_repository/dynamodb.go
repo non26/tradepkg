@@ -51,8 +51,8 @@ type IRepository interface {
 	DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error
 	// table bn_future_qoute_usdt
 	GetQouteUSDT(ctx context.Context, symbol string) (*models.BinanceFutureQouteUSDT, error)
-	UpdateCountingSymbolQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error
-	InsertNewSymbolUSDT(ctx context.Context, symbol string) error
+	UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error
+	InsertNewSymbolUSDT(ctx context.Context, symbol string, leverage int) error
 }
 
 type dynamoDBRepository struct {

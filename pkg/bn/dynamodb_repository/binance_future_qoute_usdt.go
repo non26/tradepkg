@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -33,15 +34,22 @@ func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*
 	return result, nil
 }
 
-func (d *dynamoDBRepository) UpdateCountingSymbolQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error {
+func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error {
 	table := models.NewBinanceFutureQouteUSTDTable()
 	table.BinanceFutureQouteUSDT = qouteUSDT
 	input := &dynamodb.UpdateItemInput{
-		TableName:        aws.String(table.GetTableName()),
-		Key:              table.GetKeyBySymbol(),
-		UpdateExpression: aws.String(fmt.Sprintf("set %v = :counting", table.GetCountingSymbolTableField())),
+		TableName: aws.String(table.GetTableName()),
+		Key:       table.GetKeyBySymbol(),
+		UpdateExpression: aws.String(fmt.Sprintf(
+			"set %v = :counting_long, %v = :counting_short, %v = :current_leverage",
+			table.GetCountingLongTableField(),
+			table.GetCountingShortTableField(),
+			table.GetCurrentLeverageTableField(),
+		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":counting": &types.AttributeValueMemberS{Value: table.GetNextCounting().String()},
+			":counting_long":    &types.AttributeValueMemberS{Value: table.GetNextCountingLong().String()},
+			":counting_short":   &types.AttributeValueMemberS{Value: table.GetNextCountingShort().String()},
+			":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
 		},
 	}
 	_, err := d.dynamodb.UpdateItem(ctx, input)
@@ -51,9 +59,11 @@ func (d *dynamoDBRepository) UpdateCountingSymbolQouteUSDT(ctx context.Context, 
 	return nil
 }
 
-func (d *dynamoDBRepository) InsertNewSymbolUSDT(ctx context.Context, symbol string) error {
+func (d *dynamoDBRepository) InsertNewSymbolUSDT(ctx context.Context, symbol string, leverage int) error {
 	table := models.NewBinanceFutureQouteUSTDTable()
-	table.SetCounting(0)
+	table.SetCountingLong(1)
+	table.SetCountingShort(1)
+	table.SetCurrentLeverage(leverage)
 	table.SetSymbol(symbol)
 	item, err := attributevalue.MarshalMap(table.BinanceFutureQouteUSDT)
 	if err != nil {

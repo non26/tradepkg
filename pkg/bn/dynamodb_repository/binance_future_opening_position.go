@@ -140,11 +140,24 @@ func (d *dynamoDBRepository) UpdateOpenOrder(ctx context.Context, openOrder *mod
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.BinanceFutureOpeningPosition = openOrder
 	input := &dynamodb.UpdateItemInput{
-		TableName:        aws.String(table.GetTableName()),
-		Key:              table.GetKeyByPositionSideAndSymbol(),
-		UpdateExpression: aws.String(fmt.Sprintf("set %v = :amount", "amount_q")),
+		TableName: aws.String(table.GetTableName()),
+		Key:       table.GetKeyByPositionSideAndSymbol(),
+		UpdateExpression: aws.String(fmt.Sprintf(
+			"set %v = :amount_q, %v = :amount_b, %v = :watching_config, %v = :order_type, %v = :client_id, %v = :leverage",
+			table.GetAmountQTableField(),
+			table.GetAmountBTableField(),
+			table.GetWatchingConfigTableField(),
+			table.GetOrderTypeTableField(),
+			table.GetClientIdTableField(),
+			table.GetLeverageTableField(),
+		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":amount": &types.AttributeValueMemberS{Value: openOrder.AmountQ},
+			":amount_q":        &types.AttributeValueMemberS{Value: openOrder.AmountQ},
+			":amount_b":        &types.AttributeValueMemberS{Value: openOrder.AmountB},
+			":watching_config": &types.AttributeValueMemberS{Value: openOrder.WatchingConfig},
+			":order_type":      &types.AttributeValueMemberS{Value: openOrder.OrderType},
+			":client_id":       &types.AttributeValueMemberS{Value: openOrder.ClientId},
+			":leverage":        &types.AttributeValueMemberN{Value: openOrder.Leverage},
 		},
 	}
 	_, err := d.dynamodb.UpdateItem(ctx, input)
