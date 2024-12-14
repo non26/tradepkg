@@ -22,8 +22,8 @@ type BinanceFutureOpeningPosition struct {
 	WatchingConfig     string `dynamodbav:"watching_config" dynamodb:"watching_config"`
 }
 
-func (b *BinanceFutureOpeningPosition) IsEmpty() bool {
-	return b.Symbol == ""
+func (b *BinanceFutureOpeningPosition) IsFound() bool {
+	return b.Symbol != ""
 }
 
 func (b *BinanceFutureOpeningPosition) GetKeyBySymbol() map[string]types.AttributeValue {

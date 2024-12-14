@@ -54,17 +54,21 @@ func (b *binanceServiceHttpRequest[T]) CreateRequestSignUrl(request *T, secretKe
 
 func (b *binanceServiceHttpRequest[T]) RequestPostMethod(signature string) {
 	b.req.Method = http.MethodPost
-	var body io.Reader = strings.NewReader(signature)
-	rc, ok := body.(io.ReadCloser)
-	if !ok {
-		rc = io.NopCloser(body)
+	if signature != "" {
+		var body io.Reader = strings.NewReader(signature)
+		rc, ok := body.(io.ReadCloser)
+		if !ok {
+			rc = io.NopCloser(body)
+		}
+		b.req.Body = rc
 	}
-	b.req.Body = rc
 }
 
 func (b *binanceServiceHttpRequest[T]) RequestGetMethod(signature string) {
 	b.req.Method = http.MethodGet
-	b.req.URL.RawQuery = signature
+	if signature != "" {
+		b.req.URL.RawQuery = signature
+	}
 }
 
 func (b *binanceServiceHttpRequest[T]) AddHeader(apiKey string) {

@@ -16,6 +16,7 @@ generic Q for requset model
 generic P for response model
 */
 type ICallBinance[Q, P any] interface {
+	NeedSignature(need_signature bool) ICallBinance[Q, P]
 	CallBinance(
 		request binancemodel.IBnFutureServiceRequest,
 		base_url string,
@@ -32,6 +33,7 @@ type callBinance[Q any, P any] struct {
 	http_response  binanceresponse.IBinanceServiceHttpResponse[P]
 	http_transport binanetransport.IBinanceServiceHttpTransport
 	http_client    binanceclient.IBinanceSerivceHttpClient
+	need_signature bool
 }
 
 func NewCallBinance[Q, P any](
@@ -45,8 +47,14 @@ func NewCallBinance[Q, P any](
 		http_response,
 		http_transport,
 		http_client,
+		true,
 	}
 	return &c
+}
+
+func (c *callBinance[Q, P]) NeedSignature(need_signature bool) ICallBinance[Q, P] {
+	c.need_signature = need_signature
+	return c
 }
 
 func (c *callBinance[Q, P]) CallBinance(
@@ -66,9 +74,13 @@ func (c *callBinance[Q, P]) CallBinance(
 
 	request.PrepareRequest()
 	data := request.GetData().(*Q)
-	signature, err := c.http_request.CreateRequestSignUrl(data, secret_key)
-	if err != nil {
-		return nil, err
+	signature := ""
+	if c.need_signature {
+		signature, err = c.http_request.CreateRequestSignUrl(data, secret_key)
+		if err != nil {
+			return nil, err
+		}
+		c.http_request.AddHeader(api_key)
 	}
 
 	switch method {
@@ -77,8 +89,6 @@ func (c *callBinance[Q, P]) CallBinance(
 	default:
 		c.http_request.RequestGetMethod(signature)
 	}
-
-	c.http_request.AddHeader(api_key)
 
 	c.http_client.SetClient(c.http_transport.GetTransport())
 	err = c.http_client.Do(c.http_request.GetBinanceRequest())
