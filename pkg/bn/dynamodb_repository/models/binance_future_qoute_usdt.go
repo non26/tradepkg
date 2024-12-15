@@ -9,10 +9,10 @@ import (
 )
 
 type BinanceFutureQouteUSDT struct {
-	Symbol          string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
-	CurrentLeverage int    `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
-	CountingLong    int    `dynamodb:"counting_long" dynamodbav:"counting_long"`
-	CountingShort   int    `dynamodb:"counting_short" dynamodbav:"counting_short"`
+	Symbol string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
+	// CurrentLeverage int    `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
+	CountingLong  int `dynamodb:"counting_long" dynamodbav:"counting_long"`
+	CountingShort int `dynamodb:"counting_short" dynamodbav:"counting_short"`
 }
 
 type counting int
@@ -61,17 +61,17 @@ func (b *BinanceFutureQouteUSDT) SetSymbol(symbol string) {
 	b.Symbol = symbol
 }
 
-func (b *BinanceFutureQouteUSDT) IsExist() bool {
+func (b *BinanceFutureQouteUSDT) IsFound() bool {
 	return b.Symbol != ""
 }
 
-func (b *BinanceFutureQouteUSDT) GetCurrentLeverage() int {
-	return b.CurrentLeverage
-}
+// func (b *BinanceFutureQouteUSDT) GetCurrentLeverage() int {
+// 	return b.CurrentLeverage
+// }
 
-func (b *BinanceFutureQouteUSDT) SetCurrentLeverage(leverage int) {
-	b.CurrentLeverage = leverage
-}
+// func (b *BinanceFutureQouteUSDT) SetCurrentLeverage(leverage int) {
+// 	b.CurrentLeverage = leverage
+// }
 
 type BinanceFutureQouteUSTDTable struct {
 	TableName string `table:"bn_future_qoute_usdt"`

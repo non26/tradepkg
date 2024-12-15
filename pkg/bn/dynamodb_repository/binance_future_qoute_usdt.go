@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -47,9 +46,9 @@ func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *mod
 			table.GetCurrentLeverageTableField(),
 		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":counting_long":    &types.AttributeValueMemberS{Value: table.GetNextCountingLong().String()},
-			":counting_short":   &types.AttributeValueMemberS{Value: table.GetNextCountingShort().String()},
-			":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
+			":counting_long":  &types.AttributeValueMemberS{Value: table.GetNextCountingLong().String()},
+			":counting_short": &types.AttributeValueMemberS{Value: table.GetNextCountingShort().String()},
+			// ":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
 		},
 	}
 	_, err := d.dynamodb.UpdateItem(ctx, input)
@@ -59,12 +58,9 @@ func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *mod
 	return nil
 }
 
-func (d *dynamoDBRepository) InsertNewSymbolUSDT(ctx context.Context, symbol string, leverage int) error {
+func (d *dynamoDBRepository) InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BinanceFutureQouteUSDT) error {
 	table := models.NewBinanceFutureQouteUSTDTable()
-	table.SetCountingLong(1)
-	table.SetCountingShort(1)
-	table.SetCurrentLeverage(leverage)
-	table.SetSymbol(symbol)
+	table.BinanceFutureQouteUSDT = data
 	item, err := attributevalue.MarshalMap(table.BinanceFutureQouteUSDT)
 	if err != nil {
 		log.Fatalf("Got error marshalling new movie item: %s", err)

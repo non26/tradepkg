@@ -52,7 +52,13 @@ type IRepository interface {
 	// table bn_future_qoute_usdt
 	GetQouteUSDT(ctx context.Context, symbol string) (*models.BinanceFutureQouteUSDT, error)
 	UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error
-	InsertNewSymbolUSDT(ctx context.Context, symbol string, leverage int) error
+	InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BinanceFutureQouteUSDT) error
+
+	// table bn_future_history
+	GetAllHistory(ctx context.Context) ([]models.BinanceFutureHistory, error)
+	GetHistoryByClientID(ctx context.Context, clientId string) (*models.BinanceFutureHistory, error)
+	InsertHistory(ctx context.Context, history *models.BinanceFutureHistory) error
+	UpdateHistory(ctx context.Context, history *models.BinanceFutureHistory) error
 }
 
 type dynamoDBRepository struct {

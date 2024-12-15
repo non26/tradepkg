@@ -2,6 +2,7 @@ package dynamodbrepository
 
 import (
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -49,6 +50,12 @@ func (b *BinanceFutureOpeningPosition) GetKeyByPositionSideAndSymbol() map[strin
 		"position_side": &types.AttributeValueMemberS{Value: b.PositionSide},
 		"symbol":        &types.AttributeValueMemberS{Value: b.Symbol},
 	}
+}
+
+func (b *BinanceFutureOpeningPosition) AddMoreAmountQ(amountQ string) {
+	amountQInt, _ := strconv.Atoi(amountQ)
+	prevAmountQInt, _ := strconv.Atoi(b.AmountQ)
+	b.AmountQ = strconv.Itoa(amountQInt + prevAmountQInt)
 }
 
 func NewBinanceFutureOpeningPosition() *BinanceFutureOpeningPosition {
