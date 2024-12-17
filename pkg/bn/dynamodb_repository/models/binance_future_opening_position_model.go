@@ -58,6 +58,10 @@ func (b *BinanceFutureOpeningPosition) AddMoreAmountQ(amountQ string) {
 	b.AmountQ = strconv.Itoa(amountQInt + prevAmountQInt)
 }
 
+func (b *BinanceFutureOpeningPosition) SetWatchingConfig(watchingConfig []byte) {
+	b.WatchingConfig = string(watchingConfig)
+}
+
 func NewBinanceFutureOpeningPosition() *BinanceFutureOpeningPosition {
 	return &BinanceFutureOpeningPosition{
 		// ExchangeId: 1,

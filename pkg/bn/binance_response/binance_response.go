@@ -3,7 +3,9 @@ package binanceresponse
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
+	"reflect"
 
 	models "github.com/non26/tradepkg/pkg/bn/binance_response/models"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -50,8 +52,24 @@ func (b *binanceServiceHttpResponse[R]) DecodeBinanceServiceResponse(
 		return errors.New(msg)
 	}
 	b.bnres = new(R)
-	switch any(*b.bnres).(type) {
-	case struct{}:
+	// t := reflect.TypeOf(*b.bnres)
+	// _ = t
+	// k := t.Kind()
+	// _ = k
+	// switch any(*b.bnres).(type) {
+	switch reflect.TypeOf(*b.bnres).Kind() {
+	// case reflect.Struct:
+	case reflect.Slice:
+		bnResponse := new(R)
+		bodyBytes, err := io.ReadAll(b.res.Body)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(bodyBytes, bnResponse)
+		if err != nil {
+			return err
+		}
+		b.bnres = bnResponse
 	default:
 		bnResponse := new(R)
 		err := json.NewDecoder(b.res.Body).Decode(bnResponse)

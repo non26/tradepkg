@@ -81,13 +81,15 @@ func (c *callBinance[Q, P]) CallBinance(
 			return nil, err
 		}
 		c.http_request.AddHeader(api_key)
-	}
 
-	switch method {
-	case http.MethodPost:
-		c.http_request.RequestPostMethod(signature)
-	default:
-		c.http_request.RequestGetMethod(signature)
+		switch method {
+		case http.MethodPost:
+			c.http_request.RequestPostMethod(signature)
+		default:
+			c.http_request.RequestGetMethod(signature)
+		}
+	} else {
+		c.http_request.GetBinanceRequest().Method = http.MethodGet
 	}
 
 	c.http_client.SetClient(c.http_transport.GetTransport())

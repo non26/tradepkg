@@ -29,7 +29,7 @@ func (b *BinanceFutureHistory) GetKeyClientID() map[string]types.AttributeValue 
 }
 
 type BinanceFutureHistoryTable struct {
-	TableName string `table:"bn_future_history_table"`
+	TableName string `table:"bn_future_history"`
 	*BinanceFutureHistory
 }
 

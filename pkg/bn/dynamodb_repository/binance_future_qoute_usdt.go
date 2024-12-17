@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -40,14 +41,13 @@ func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *mod
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBySymbol(),
 		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :counting_long, %v = :counting_short, %v = :current_leverage",
+			"set %v = :counting_long, %v = :counting_short",
 			table.GetCountingLongTableField(),
 			table.GetCountingShortTableField(),
-			table.GetCurrentLeverageTableField(),
 		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":counting_long":  &types.AttributeValueMemberS{Value: table.GetNextCountingLong().String()},
-			":counting_short": &types.AttributeValueMemberS{Value: table.GetNextCountingShort().String()},
+			":counting_long":  &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCountingLong())},
+			":counting_short": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCountingShort())},
 			// ":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
 		},
 	}

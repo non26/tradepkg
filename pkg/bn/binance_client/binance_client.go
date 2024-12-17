@@ -1,6 +1,8 @@
 package binanceclient
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type IBinanceSerivceHttpClient interface {
 	Do(bnreq *http.Request) error
