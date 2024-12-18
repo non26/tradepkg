@@ -55,10 +55,10 @@ func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol st
 	return result, nil
 }
 
-func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_id string) ([]models.BinanceFutureOpeningPosition, error) {
+func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_id string) (*models.BinanceFutureOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := []models.BinanceFutureOpeningPosition{}
+	result := &models.BinanceFutureOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.ClientId = client_id
 	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{

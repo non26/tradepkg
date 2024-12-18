@@ -43,7 +43,7 @@ func NewCredential(accessKeyID, secretAccessKey string) *credential {
 type IRepository interface {
 	GetAllOpenOrders(ctx context.Context) ([]models.BinanceFutureOpeningPosition, error)
 	GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderByClientID(ctx context.Context, clientId string) ([]models.BinanceFutureOpeningPosition, error)
+	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BinanceFutureOpeningPosition, error)
 	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BinanceFutureOpeningPosition, error)
 	NewOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
 	UpdateOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
