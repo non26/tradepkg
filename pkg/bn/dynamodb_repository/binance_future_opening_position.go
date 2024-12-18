@@ -3,6 +3,7 @@ package dynamodbrepository
 import (
 	"context"
 	"fmt"
+	"log"
 
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 
@@ -57,22 +58,50 @@ func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol st
 
 func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_id string) (*models.BinanceFutureOpeningPosition, error) {
 	var err error
-	var response *dynamodb.GetItemOutput
-	result := &models.BinanceFutureOpeningPosition{}
+	var response *dynamodb.ScanOutput
+	result := []models.BinanceFutureOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.ClientId = client_id
-	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	// response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	// 	TableName: aws.String(table.GetTableName()),
+	// 	Key:       table.GetKeyByClientID(),
+	// })
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// err = attributevalue.UnmarshalMap(response.Item, &result)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	response, err = d.dynamodb.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyByClientID(),
+		// Optional: Add a filter expression
+		FilterExpression: aws.String("contains(#client_id, :value)"),
+		ExpressionAttributeNames: map[string]string{
+			"#client_id": "client_id", // Field name in DynamoDB table
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":value": &types.AttributeValueMemberS{Value: client_id}, // Filter condition
+		},
 	})
 	if err != nil {
+		log.Fatalf("Failed to perform scan: %v", err)
 		return nil, err
 	}
-	err = attributevalue.UnmarshalMap(response.Item, &result)
+
+	if len(response.Items) == 0 {
+		return &models.BinanceFutureOpeningPosition{}, nil
+	}
+
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
 	if err != nil {
+		log.Fatalf("Failed to unmarshal items: %v", err)
 		return nil, err
 	}
-	return result, nil
+	if len(result) == 0 {
+		return &models.BinanceFutureOpeningPosition{}, nil
+	}
+	return &result[0], nil
 }
 
 func (d *dynamoDBRepository) DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error {
