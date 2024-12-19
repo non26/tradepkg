@@ -41,25 +41,17 @@ func (b *binanceTime) convertToUTC(t time.Time) time.Time {
 	return t.In(time.UTC)
 }
 
-func (b *binanceTime) startHourPeriod(round int, period int) time.Time {
-	return b.start_date_time.Add(time.Hour * time.Duration(round*period))
-}
-
-func (b *binanceTime) endHourPeriod(start_hour_time time.Time, period int) time.Time {
-	return start_hour_time.Add(time.Hour * time.Duration(period-1)).Add(59 * time.Minute).Add(59 * time.Second)
-}
-
 func (b *binanceTime) GetBnTimeStartHourAndEndHour(period int) (time.Time, time.Time, error) {
 	remainder := 24 % period
 	if remainder != 0 {
 		return time.Time{}, time.Time{}, fmt.Errorf("period must be a divisor of 24")
 	}
 
-	period_count := (24 / period) - 1
+	period_count := (24 / period) - 1 // 24 is the number of hours in a day
 
 	for i := 0; i <= period_count; i++ {
-		start_hour_time := b.startHourPeriod(i, period)
-		end_hour_time := b.endHourPeriod(start_hour_time, period)
+		start_hour_time := b.startPeriod(i, period, Hour)
+		end_hour_time := b.endPeriod(start_hour_time, period, Hour)
 		_, _, ok := isBetween(b.execute_at, start_hour_time, end_hour_time)
 		if ok {
 			return start_hour_time, end_hour_time, nil
@@ -76,25 +68,17 @@ func (b *binanceTime) GetPreviousBnTimeStartHourAndEndHour(period int) (time.Tim
 	return start_time.Add(time.Duration(-1*period) * time.Hour), end_time.Add(time.Duration(-1*period) * time.Hour), nil
 }
 
-func (b *binanceTime) startMinutePeriod(round int, period int) time.Time {
-	return b.start_date_time.Add(time.Minute * time.Duration(round*period))
-}
-
-func (b *binanceTime) endMinutePeriod(start_minute_time time.Time, period int) time.Time {
-	return start_minute_time.Add(time.Minute * time.Duration(period-1)).Add(59 * time.Second)
-}
-
 func (b *binanceTime) GetBnTimeStartMinuteAndEndMinute(period int) (time.Time, time.Time, error) {
-	remainder := 60 % period
+	remainder := 1440 % period
 	if remainder != 0 {
-		return time.Time{}, time.Time{}, fmt.Errorf("period must be a divisor of 60")
+		return time.Time{}, time.Time{}, fmt.Errorf("period must be a divisor of 1440(24*60)")
 	}
 
-	period_count := (60 / period) - 1
+	period_count := (1440 / period) - 1 // 1440 is the number of minutes in a day
 
 	for i := 0; i <= period_count; i++ {
-		start_minute_time := b.startMinutePeriod(i, period)
-		end_minute_time := b.endMinutePeriod(start_minute_time, period)
+		start_minute_time := b.startPeriod(i, period, Minute)
+		end_minute_time := b.endPeriod(start_minute_time, period, Minute)
 		_, _, ok := isBetween(b.execute_at, start_minute_time, end_minute_time)
 		if ok {
 			return start_minute_time, end_minute_time, nil
@@ -111,6 +95,49 @@ func (b *binanceTime) GetPreviousBnTimeStartMinuteAndEndMinute(period int) (time
 	return start_time.Add(time.Duration(-1*period) * time.Minute), end_time.Add(time.Duration(-1*period) * time.Minute), nil
 }
 
+func (b *binanceTime) GetBnTimeStartDayAndEndDay(period int) (time.Time, time.Time, error) {
+	start_day_time := b.startPeriod(0, period, Day)
+	end_day_time := b.endPeriod(start_day_time, period, Day)
+	return start_day_time, end_day_time, nil
+}
+
+func (b *binanceTime) GetPreviousBnTimeStartDayAndEndDay(period int) (time.Time, time.Time, error) {
+	start_time, end_time, err := b.GetBnTimeStartDayAndEndDay(period)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+	hour_count := period * 24
+	start_time = start_time.Add(time.Duration(-hour_count) * time.Hour)
+	end_time = end_time.Add(time.Duration(-hour_count) * time.Hour)
+	return start_time, end_time, nil
+}
+
+func (b *binanceTime) startPeriod(round int, period int, unit time.Duration) time.Time {
+	switch unit {
+	case Minute:
+		return b.start_date_time.Add(time.Minute * time.Duration(round*period))
+	case Hour:
+		return b.start_date_time.Add(time.Hour * time.Duration(round*period))
+	case Day:
+		return b.start_date_time
+	default:
+		return time.Time{}
+	}
+}
+
+func (b *binanceTime) endPeriod(start_period time.Time, period int, unit time.Duration) time.Time {
+	switch unit {
+	case Minute:
+		return start_period.Add(time.Minute * time.Duration(period-1)).Add(59 * time.Second)
+	case Hour:
+		return start_period.Add(time.Hour * time.Duration(period-1)).Add(59 * time.Minute).Add(59 * time.Second)
+	case Day:
+		return start_period.Add(time.Hour * time.Duration(period*24-1)).Add(59 * time.Minute).Add(59 * time.Second)
+	default:
+		return time.Time{}
+	}
+}
+
 func isBetween(t time.Time, start time.Time, end time.Time) (int64, int64, bool) {
 	startUnix := start.Unix()
 	endUnix := end.Unix()
@@ -120,3 +147,5 @@ func isBetween(t time.Time, start time.Time, end time.Time) (int64, int64, bool)
 	}
 	return 0, 0, false
 }
+
+// (24-1)*2 + 1 = 24(2) - 1(2) + 1 = 48-2+1 = 48-1 => 2(24) -1 = period * 24 - 1

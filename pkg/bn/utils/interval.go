@@ -12,7 +12,7 @@ const (
 	Hour   = time.Duration(1) * time.Hour
 	Day    = time.Duration(1) * time.Hour * 24
 	Week   = time.Duration(1) * time.Hour * 24 * 7
-	// Month  = time.Duration(1) * time.Hour * 24 * 30
+	// Month  = time.Duration(1) * time.Hour * 24 * 30 // deal with some month that has 31 days, 29 days, 28 days, 30 days
 )
 
 func GetInterval(interval string) (int, time.Duration, error) {

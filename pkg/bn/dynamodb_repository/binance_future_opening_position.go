@@ -62,17 +62,6 @@ func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_
 	result := []models.BinanceFutureOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
 	table.ClientId = client_id
-	// response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
-	// 	TableName: aws.String(table.GetTableName()),
-	// 	Key:       table.GetKeyByClientID(),
-	// })
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// err = attributevalue.UnmarshalMap(response.Item, &result)
-	// if err != nil {
-	// 	return nil, err
-	// }
 	response, err = d.dynamodb.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
 		// Optional: Add a filter expression
