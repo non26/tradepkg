@@ -13,10 +13,10 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*models.BinanceFutureQouteUSDT, error) {
+func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := &models.BinanceFutureQouteUSDT{}
+	result := &models.BnFtQouteUSDT{}
 	table := models.NewBinanceFutureQouteUSTDTable()
 	table.Symbol = symbol
 	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
@@ -34,9 +34,9 @@ func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*
 	return result, nil
 }
 
-func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error {
+func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error {
 	table := models.NewBinanceFutureQouteUSTDTable()
-	table.BinanceFutureQouteUSDT = qouteUSDT
+	table.BnFtQouteUSDT = qouteUSDT
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBySymbol(),
@@ -58,10 +58,10 @@ func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *mod
 	return nil
 }
 
-func (d *dynamoDBRepository) InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BinanceFutureQouteUSDT) error {
+func (d *dynamoDBRepository) InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BnFtQouteUSDT) error {
 	table := models.NewBinanceFutureQouteUSTDTable()
-	table.BinanceFutureQouteUSDT = data
-	item, err := attributevalue.MarshalMap(table.BinanceFutureQouteUSDT)
+	table.BnFtQouteUSDT = data
+	item, err := attributevalue.MarshalMap(table.BnFtQouteUSDT)
 	if err != nil {
 		log.Fatalf("Got error marshalling new movie item: %s", err)
 	}

@@ -41,24 +41,32 @@ func NewCredential(accessKeyID, secretAccessKey string) *credential {
 }
 
 type IRepository interface {
-	GetAllOpenOrders(ctx context.Context) ([]models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BinanceFutureOpeningPosition, error)
-	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BinanceFutureOpeningPosition, error)
-	NewOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
-	UpdateOpenOrder(ctx context.Context, openOrder *models.BinanceFutureOpeningPosition) error
+	// table bn_ft_opening_position
+	GetAllOpenOrders(ctx context.Context) ([]models.BnFtOpeningPosition, error)
+	GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BnFtOpeningPosition, error)
+	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BnFtOpeningPosition, error)
+	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BnFtOpeningPosition, error)
+	InsertNewOpenOrder(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
+	UpdateOpenOrder(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error
 	DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error
+
 	// table bn_future_qoute_usdt
-	GetQouteUSDT(ctx context.Context, symbol string) (*models.BinanceFutureQouteUSDT, error)
-	UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BinanceFutureQouteUSDT) error
-	InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BinanceFutureQouteUSDT) error
+	GetQouteUSDT(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error)
+	UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error
+	InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BnFtQouteUSDT) error
 
 	// table bn_future_history
-	GetAllHistory(ctx context.Context) ([]models.BinanceFutureHistory, error)
-	GetHistoryByClientID(ctx context.Context, clientId string) (*models.BinanceFutureHistory, error)
-	InsertHistory(ctx context.Context, history *models.BinanceFutureHistory) error
-	UpdateHistory(ctx context.Context, history *models.BinanceFutureHistory) error
+	GetAllHistory(ctx context.Context) ([]models.BnFtHistory, error)
+	GetHistoryByClientID(ctx context.Context, clientId string) (*models.BnFtHistory, error)
+	InsertHistory(ctx context.Context, history *models.BnFtHistory) error
+	UpdateHistory(ctx context.Context, history *models.BnFtHistory) error
+
+	// table bot_on_run
+	GetBotOnRunByBotIDAndOrderID(ctx context.Context, botOnRun *models.BnFtBotOnRun) (*models.BnFtBotOnRun, error)
+	InsertBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	UpdateBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	DeleteBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 }
 
 type dynamoDBRepository struct {

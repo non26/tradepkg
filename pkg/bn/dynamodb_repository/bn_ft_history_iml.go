@@ -10,9 +10,9 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetAllHistory(ctx context.Context) ([]models.BinanceFutureHistory, error) {
+func (d *dynamoDBRepository) GetAllHistory(ctx context.Context) ([]models.BnFtHistory, error) {
 	table := models.NewBinanceFutureHistoryTable()
-	result := []models.BinanceFutureHistory{}
+	result := []models.BnFtHistory{}
 	response, err := d.dynamodb.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
 	})
@@ -27,10 +27,10 @@ func (d *dynamoDBRepository) GetAllHistory(ctx context.Context) ([]models.Binanc
 	return result, nil
 }
 
-func (d *dynamoDBRepository) GetHistoryByClientID(ctx context.Context, clientId string) (*models.BinanceFutureHistory, error) {
+func (d *dynamoDBRepository) GetHistoryByClientID(ctx context.Context, clientId string) (*models.BnFtHistory, error) {
 	table := models.NewBinanceFutureHistoryTable()
 	table.ClientId = clientId
-	result := &models.BinanceFutureHistory{}
+	result := &models.BnFtHistory{}
 	response, err := d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyClientID(),
@@ -46,7 +46,7 @@ func (d *dynamoDBRepository) GetHistoryByClientID(ctx context.Context, clientId 
 	return result, nil
 }
 
-func (d *dynamoDBRepository) InsertHistory(ctx context.Context, history *models.BinanceFutureHistory) error {
+func (d *dynamoDBRepository) InsertHistory(ctx context.Context, history *models.BnFtHistory) error {
 	table := models.NewBinanceFutureHistoryTable()
 	item, err := attributevalue.MarshalMap(history)
 	if err != nil {
@@ -62,7 +62,7 @@ func (d *dynamoDBRepository) InsertHistory(ctx context.Context, history *models.
 	return nil
 }
 
-func (d *dynamoDBRepository) UpdateHistory(ctx context.Context, history *models.BinanceFutureHistory) error {
+func (d *dynamoDBRepository) UpdateHistory(ctx context.Context, history *models.BnFtHistory) error {
 	table := models.NewBinanceFutureHistoryTable()
 	item, err := attributevalue.MarshalMap(history)
 	if err != nil {
