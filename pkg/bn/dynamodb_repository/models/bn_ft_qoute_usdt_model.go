@@ -21,7 +21,7 @@ func (c counting) String() string {
 	return strconv.Itoa(c.Int())
 }
 
-func newBnFtQouteUSDT() *BnFtQouteUSDT {
+func NewBnFtQouteUSDT() *BnFtQouteUSDT {
 	return &BnFtQouteUSDT{}
 }
 

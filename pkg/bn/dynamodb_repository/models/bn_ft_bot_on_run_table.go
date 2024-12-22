@@ -8,7 +8,7 @@ import (
 )
 
 type BnFtBotOnRunTable struct {
-	TableName string `table:"bn_ft_bot_on_run"`
+	TableName string `table:"bot_on_run"`
 	*BnFtBotOnRun
 }
 

@@ -67,7 +67,7 @@ func (d *dynamoDBRepository) DeleteBotOnRun(ctx context.Context, botOnRun *model
 	table := models.NewBinanceFutureBotOnRunTable(botOnRun)
 	_, err := d.dynamodb.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyBotID(),
+		Key:       table.GetKeyBotIDAndOrderID(),
 	})
 	return err
 }

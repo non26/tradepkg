@@ -14,7 +14,7 @@ type BnFtQouteUSTDTable struct {
 
 func NewBinanceFutureQouteUSTDTable() *BnFtQouteUSTDTable {
 	return &BnFtQouteUSTDTable{
-		BnFtQouteUSDT: newBnFtQouteUSDT(),
+		BnFtQouteUSDT: NewBnFtQouteUSDT(),
 	}
 }
 

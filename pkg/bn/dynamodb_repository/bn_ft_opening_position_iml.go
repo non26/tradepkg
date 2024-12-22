@@ -35,15 +35,15 @@ func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) ([]models.BnF
 	return result, nil
 }
 
-func (d *dynamoDBRepository) GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BnFtOpeningPosition, error) {
+func (d *dynamoDBRepository) GetOpenOrderBySymbolAndPositionSide(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := []models.BnFtOpeningPosition{}
+	result := &models.BnFtOpeningPosition{}
 	table := models.NewBinanceFutureOpeningPositionTable()
-	table.Symbol = symbol
+	table.BnFtOpeningPosition = data
 	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyBySymbol(),
+		Key:       table.GetKeyByPositionSideAndSymbol(),
 	})
 	if err != nil {
 		return nil, err
@@ -93,24 +93,12 @@ func (d *dynamoDBRepository) GetOpenOrderByClientID(ctx context.Context, client_
 	return &result[0], nil
 }
 
-func (d *dynamoDBRepository) DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error {
+func (d *dynamoDBRepository) DeleteOpenOrderBySymbolAndPositionSide(ctx context.Context, openOrder *models.BnFtOpeningPosition) error {
 	table := models.NewBinanceFutureOpeningPositionTable()
-	table.Symbol = symbol
+	table.BnFtOpeningPosition = openOrder
 	_, err := d.dynamodb.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyBySymbol(),
-	})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *dynamoDBRepository) DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error {
-	table := models.NewBinanceFutureOpeningPositionTable()
-	_, err := d.dynamodb.DeleteItem(ctx, &dynamodb.DeleteItemInput{
-		TableName: aws.String(table.GetTableName()),
-		Key:       key,
+		Key:       table.GetKeyByPositionSideAndSymbol(),
 	})
 	if err != nil {
 		return err

@@ -43,13 +43,12 @@ func NewCredential(accessKeyID, secretAccessKey string) *credential {
 type IRepository interface {
 	// table bn_ft_opening_position
 	GetAllOpenOrders(ctx context.Context) ([]models.BnFtOpeningPosition, error)
-	GetOpenOrderBySymbol(ctx context.Context, symbol string) ([]models.BnFtOpeningPosition, error)
+	GetOpenOrderBySymbolAndPositionSide(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error)
 	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BnFtOpeningPosition, error)
 	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BnFtOpeningPosition, error)
 	InsertNewOpenOrder(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	UpdateOpenOrder(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
-	DeleteOpenOrderBySymbol(ctx context.Context, symbol string) error
-	DeleteOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) error
+	DeleteOpenOrderBySymbolAndPositionSide(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 
 	// table bn_future_qoute_usdt
 	GetQouteUSDT(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error)
@@ -67,6 +66,9 @@ type IRepository interface {
 	InsertBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 	UpdateBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 	DeleteBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+
+	// table bot
+	GetBotByBotID(ctx context.Context, botID string) (*models.BnFtBot, error)
 }
 
 type dynamoDBRepository struct {
