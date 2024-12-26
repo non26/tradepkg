@@ -53,10 +53,12 @@ func (d *dynamoDBRepository) UpdateBotOnRun(ctx context.Context, botOnRun *model
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBotID(),
 		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :symbol, %v = :position_side, %v = :position_condition",
+			"set %v = :symbol, %v = :position_side, %v = :position_condition, %v = :amount_q, %v = :is_active",
 			table.GetSymbolTableField(),
 			table.GetPositionSideTableField(),
 			table.GetPositionConditionTableField(),
+			table.GetAmountQtyTableField(),
+			table.GetIsActiveTableField(),
 		)),
 		ExpressionAttributeValues: item,
 	})
