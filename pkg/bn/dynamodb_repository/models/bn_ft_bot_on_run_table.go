@@ -49,3 +49,13 @@ func (b *BnFtBotOnRunTable) GetPositionConditionTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
 	return v
 }
+
+func (b *BnFtBotOnRunTable) GetAmountQtyTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountQoute", "dynamodb")
+	return v
+}
+
+func (b *BnFtBotOnRunTable) GetIsActiveTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "IsActive", "dynamodb")
+	return v
+}
