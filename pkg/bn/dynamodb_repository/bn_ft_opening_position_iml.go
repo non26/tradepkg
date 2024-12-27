@@ -13,7 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) ([]models.BnFtOpeningPosition, error) {
+// return map[string]*models.BnFtOpeningPosition all position in db
+// key is symbol + position_side
+func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) (map[string]*models.BnFtOpeningPosition, error) {
 	var err error
 	var response *dynamodb.QueryOutput
 	table := models.NewBinanceFutureOpeningPositionTable()
@@ -32,7 +34,15 @@ func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) ([]models.BnF
 		}
 	}
 
-	return result, nil
+	if len(result) == 0 {
+		return nil, nil
+	}
+
+	openOrders := make(map[string]*models.BnFtOpeningPosition)
+	for _, openOrder := range result {
+		openOrders[openOrder.Symbol+openOrder.PositionSide] = &openOrder
+	}
+	return openOrders, nil
 }
 
 func (d *dynamoDBRepository) GetOpenOrderBySymbolAndPositionSide(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error) {

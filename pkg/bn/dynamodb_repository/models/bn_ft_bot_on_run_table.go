@@ -35,6 +35,16 @@ func (b *BnFtBotOnRunTable) GetKeyBotID() map[string]types.AttributeValue {
 	}
 }
 
+func (b *BnFtBotOnRunTable) GetBotIDTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotID", "dynamodb")
+	return v
+}
+
+func (b *BnFtBotOnRunTable) GetBotOrderIDTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotOrderID", "dynamodb")
+	return v
+}
+
 func (b *BnFtBotOnRunTable) GetSymbolTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
 	return v

@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
@@ -45,22 +46,23 @@ func (d *dynamoDBRepository) InsertBotOnRun(ctx context.Context, botOnRun *model
 
 func (d *dynamoDBRepository) UpdateBotOnRun(ctx context.Context, botOnRun *models.BnFtBotOnRun) error {
 	table := models.NewBinanceFutureBotOnRunTable(botOnRun)
-	item, err := attributevalue.MarshalMap(botOnRun)
-	if err != nil {
-		return err
-	}
-	_, err = d.dynamodb.UpdateItem(ctx, &dynamodb.UpdateItemInput{
-		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyBotID(),
-		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :symbol, %v = :position_side, %v = :position_condition, %v = :amount_q, %v = :is_active",
-			table.GetSymbolTableField(),
-			table.GetPositionSideTableField(),
-			table.GetPositionConditionTableField(),
-			table.GetAmountQtyTableField(),
-			table.GetIsActiveTableField(),
-		)),
-		ExpressionAttributeValues: item,
+	updateExpression := fmt.Sprintf(
+		"set %v = :symbol, %v = :position_side, %v = :amount_q, %v = :is_active",
+		table.GetSymbolTableField(),
+		table.GetPositionSideTableField(),
+		table.GetAmountQtyTableField(),
+		table.GetIsActiveTableField(),
+	)
+	_, err := d.dynamodb.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName:        aws.String(table.GetTableName()),
+		Key:              table.GetKeyBotIDAndOrderID(),
+		UpdateExpression: aws.String(updateExpression),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":symbol":        &types.AttributeValueMemberS{Value: botOnRun.Symbol},
+			":position_side": &types.AttributeValueMemberS{Value: botOnRun.PositionSide},
+			":amount_q":      &types.AttributeValueMemberS{Value: botOnRun.AmountQoute},
+			":is_active":     &types.AttributeValueMemberBOOL{Value: botOnRun.IsActive},
+		},
 	})
 	return err
 }

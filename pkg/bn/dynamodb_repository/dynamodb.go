@@ -42,7 +42,7 @@ func NewCredential(accessKeyID, secretAccessKey string) *credential {
 
 type IRepository interface {
 	// table bn_ft_opening_position
-	GetAllOpenOrders(ctx context.Context) ([]models.BnFtOpeningPosition, error)
+	GetAllOpenOrders(ctx context.Context) (map[string]*models.BnFtOpeningPosition, error)
 	GetOpenOrderBySymbolAndPositionSide(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error)
 	GetOpenOrderByClientID(ctx context.Context, clientId string) (*models.BnFtOpeningPosition, error)
 	GetOpenOrderByKey(ctx context.Context, key map[string]types.AttributeValue) (*models.BnFtOpeningPosition, error)

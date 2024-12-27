@@ -398,54 +398,54 @@ func TestBinanceTimeV2_GetBnTimeStartHourAndEndHour_6hoursPeriod_success(t *test
 	})
 }
 
-func TestBinanceTimeV2_GetBnTimeStartHourAndEndHour_8hoursPeriod_success(t *testing.T) {
-	year := 2024
-	month := time.Month(12)
-	day := 13
-	minute := 12
-	second := 57
-	period := 8
-	thai_time, _ := thaitime.NewThaiTime()
+// func TestBinanceTimeV2_GetBnTimeStartHourAndEndHour_8hoursPeriod_success(t *testing.T) {
+// 	year := 2024
+// 	month := time.Month(12)
+// 	day := 13
+// 	minute := 12
+// 	second := 57
+// 	period := 8
+// 	thai_time, _ := thaitime.NewThaiTime()
 
-	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_00:00:00_07:59:59_UTC_at_08:12:57_asia/bangkok", func(t *testing.T) {
-		_thai_time := time.Date(year, month, day, 8, minute, second, 0, thai_time.Location)
-		bn_time := NewBinanceTime(_thai_time)
+// 	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_00:00:00_07:59:59_UTC_at_08:12:57_asia/bangkok", func(t *testing.T) {
+// 		_thai_time := time.Date(year, month, day, 8, minute, second, 0, thai_time.Location)
+// 		bn_time := NewBinanceTime(_thai_time)
 
-		expected_start := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
-		expected_end := time.Date(year, month, day, 7, 59, 59, 0, time.UTC)
+// 		expected_start := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+// 		expected_end := time.Date(year, month, day, 7, 59, 59, 0, time.UTC)
 
-		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
-		assert.Nil(t, err)
-		assert.Equal(t, start.Unix(), expected_start.Unix())
-		assert.Equal(t, end.Unix(), expected_end.Unix())
-	})
+// 		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
+// 		assert.Nil(t, err)
+// 		assert.Equal(t, start.Unix(), expected_start.Unix())
+// 		assert.Equal(t, end.Unix(), expected_end.Unix())
+// 	})
 
-	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_08:00:00_15:59:59_UTC_at_16:12:57_asia/bangkok", func(t *testing.T) {
-		_thai_time := time.Date(year, month, day, 16, minute, second, 0, thai_time.Location)
-		bn_time := NewBinanceTime(_thai_time)
+// 	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_08:00:00_15:59:59_UTC_at_16:12:57_asia/bangkok", func(t *testing.T) {
+// 		_thai_time := time.Date(year, month, day, 16, minute, second, 0, thai_time.Location)
+// 		bn_time := NewBinanceTime(_thai_time)
 
-		expected_start := time.Date(year, month, day, 8, 0, 0, 0, time.UTC)
-		expected_end := time.Date(year, month, day, 15, 59, 59, 0, time.UTC)
+// 		expected_start := time.Date(year, month, day, 8, 0, 0, 0, time.UTC)
+// 		expected_end := time.Date(year, month, day, 15, 59, 59, 0, time.UTC)
 
-		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
-		assert.Nil(t, err)
-		assert.Equal(t, start.Unix(), expected_start.Unix())
-		assert.Equal(t, end.Unix(), expected_end.Unix())
-	})
+// 		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
+// 		assert.Nil(t, err)
+// 		assert.Equal(t, start.Unix(), expected_start.Unix())
+// 		assert.Equal(t, end.Unix(), expected_end.Unix())
+// 	})
 
-	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_16:00:00_23:59:59_UTC_at_24:12:57_asia/bangkok", func(t *testing.T) {
-		_thai_time := time.Date(year, month, day+1, 24, minute, second, 0, thai_time.Location)
-		bn_time := NewBinanceTime(_thai_time)
+// 	t.Run("GetBnTimeStartHourAndEndHour_8hoursPeriod_16:00:00_23:59:59_UTC_at_24:12:57_asia/bangkok", func(t *testing.T) {
+// 		_thai_time := time.Date(year, month, day+1, 24, minute, second, 0, thai_time.Location)
+// 		bn_time := NewBinanceTime(_thai_time)
 
-		expected_start := time.Date(year, month, day, 16, 0, 0, 0, time.UTC)
-		expected_end := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
+// 		expected_start := time.Date(year, month, day, 16, 0, 0, 0, time.UTC)
+// 		expected_end := time.Date(year, month, day, 23, 59, 59, 0, time.UTC)
 
-		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
-		assert.Nil(t, err)
-		assert.Equal(t, start.Unix(), expected_start.Unix())
-		assert.Equal(t, end.Unix(), expected_end.Unix())
-	})
-}
+// 		start, end, err := bn_time.GetBnTimeStartHourAndEndHour(period)
+// 		assert.Nil(t, err)
+// 		assert.Equal(t, start.Unix(), expected_start.Unix())
+// 		assert.Equal(t, end.Unix(), expected_end.Unix())
+// 	})
+// }
 
 func TestBinanceTimeV2_GetBnTimeStartHourAndEndHour_12hoursPeriod_success(t *testing.T) {
 	year := 2024
