@@ -17,28 +17,42 @@ import (
 // key is symbol + position_side
 func (d *dynamoDBRepository) GetAllOpenOrders(ctx context.Context) (map[string]*models.BnFtOpeningPosition, error) {
 	var err error
-	var response *dynamodb.QueryOutput
+	var response *dynamodb.ScanOutput
 	table := models.NewBinanceFutureOpeningPositionTable()
 	result := make([]models.BnFtOpeningPosition, 0)
-	queryPaginator := dynamodb.NewQueryPaginator(d.dynamodb, &dynamodb.QueryInput{
+	// queryPaginator := dynamodb.NewQueryPaginator(d.dynamodb, &dynamodb.QueryInput{
+	// 	TableName: aws.String(table.GetTableName()),
+	// })
+	// for queryPaginator.HasMorePages() {
+	// 	response, err = queryPaginator.NextPage(ctx)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// }
+
+	// if len(result) == 0 {
+	// 	return nil, nil
+	// }
+	response, err = d.dynamodb.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
 	})
-	for queryPaginator.HasMorePages() {
-		response, err = queryPaginator.NextPage(ctx)
-		if err != nil {
-			return nil, err
-		}
-		err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
-		if err != nil {
-			return nil, err
-		}
+	if err != nil {
+		return nil, err
 	}
-
-	if len(result) == 0 {
-		return nil, nil
-	}
-
 	openOrders := make(map[string]*models.BnFtOpeningPosition)
+	if len(response.Items) == 0 {
+		return openOrders, nil
+	}
+
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, openOrder := range result {
 		openOrders[openOrder.Symbol+openOrder.PositionSide] = &openOrder
 	}
@@ -173,7 +187,7 @@ func (d *dynamoDBRepository) UpdateOpenOrder(ctx context.Context, openOrder *mod
 			":watching_config": &types.AttributeValueMemberS{Value: openOrder.WatchingConfig},
 			":order_type":      &types.AttributeValueMemberS{Value: openOrder.OrderType},
 			":client_id":       &types.AttributeValueMemberS{Value: openOrder.ClientId},
-			":leverage":        &types.AttributeValueMemberN{Value: openOrder.Leverage},
+			":leverage":        &types.AttributeValueMemberS{Value: openOrder.Leverage},
 		},
 	}
 	_, err := d.dynamodb.UpdateItem(ctx, input)
