@@ -37,6 +37,11 @@ func (b *BnFtHistoryTable) GetPositionSideTableField() string {
 	return v
 }
 
+func (b *BnFtHistoryTable) GetCreatedAtTableField() string {
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CreatedAt", "dynamodb")
+	return v
+}
+
 func (b *BnFtHistoryTable) GetKeyClientID() map[string]types.AttributeValue {
 	return map[string]types.AttributeValue{
 		"client_id": &types.AttributeValueMemberS{Value: b.ClientId},

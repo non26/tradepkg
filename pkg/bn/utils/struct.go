@@ -5,6 +5,7 @@ import (
 	"reflect"
 )
 
+// TODO Duplicate with okx
 func GetStructTagValueByField(st reflect.Type, field string, tag_name string) (string, error) {
 	_field, found := st.FieldByName(field)
 	if !found {
@@ -12,6 +13,7 @@ func GetStructTagValueByField(st reflect.Type, field string, tag_name string) (s
 	}
 	return _field.Tag.Get(tag_name), nil
 }
+
 func GetStructTagValueByIndex(st reflect.Type, tag string, index int) string {
 	return st.FieldByIndex([]int{index}).Tag.Get(tag)
 }

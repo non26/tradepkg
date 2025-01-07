@@ -13,6 +13,10 @@ func GetSpecificBnTimestamp(t *time.Time) int64 {
 	return t.Unix() * 1000
 }
 
+func GetDBTime() string {
+	return time.Now().Format(time.RFC3339)
+}
+
 type binanceTime struct {
 	start_date_time time.Time
 	execute_at      time.Time

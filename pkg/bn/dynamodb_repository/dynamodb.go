@@ -69,6 +69,12 @@ type IRepository interface {
 
 	// table bot
 	GetBotByBotID(ctx context.Context, botID string) (*models.BnFtBot, error)
+
+	// table bn_future_advanced_position
+	GetAdvancedPositionBySymbolAndPositionSide(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) (*models.BnFtAdvancedPositionModel, error)
+	InsertAdvancedPosition(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
+	// UpdateAdvancedPosition(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionTable) error
+	DeleteAdvancedPosition(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
 }
 
 type dynamoDBRepository struct {

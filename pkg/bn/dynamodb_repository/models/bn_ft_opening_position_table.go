@@ -2,7 +2,6 @@ package dynamodbrepository
 
 import (
 	"reflect"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -23,16 +22,8 @@ func (b *BnFtOpeningPositionTable) GetTableName() string {
 	return utils.GetStructTagValueByIndex(reflect.TypeOf(b).Elem(), "table", 0)
 }
 
-func (b *BnFtOpeningPositionTable) SetBuyCreatedAt() {
-	b.BuyOrderCreatedAt = b.time()
-}
-
-func (b *BnFtOpeningPositionTable) SetSellCreatedAt() {
-	b.SellOrderCreatedAt = b.time()
-}
-
-func (b *BnFtOpeningPositionTable) time() string {
-	return time.Now().Format(time.RFC3339)
+func (b *BnFtOpeningPositionTable) SetCreatedAt() {
+	b.CreatedAt = utils.GetDBTime()
 }
 
 func (b *BnFtOpeningPositionTable) GetLeverageTableField() string {
