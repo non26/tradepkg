@@ -2,8 +2,6 @@ package dynamodbrepository
 
 import (
 	"strconv"
-
-	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
 type BnFtOpeningPosition struct {
@@ -37,8 +35,4 @@ func (b *BnFtOpeningPosition) AddMoreAmountQ(amountQ string) {
 
 func (b *BnFtOpeningPosition) SetWatchingConfig(watchingConfig []byte) {
 	b.WatchingConfig = string(watchingConfig)
-}
-
-func (b *BnFtOpeningPosition) SetCreatedAt() {
-	b.CreatedAt = utils.GetDBTime()
 }

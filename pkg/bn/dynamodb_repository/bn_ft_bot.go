@@ -9,11 +9,21 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetBotByBotID(ctx context.Context, botID string) (*models.BnFtBot, error) {
+type bnFtBotRepository struct {
+	client *dynamodb.Client
+}
+
+func NewConnectionBnFtBotRepository(client *dynamodb.Client) IBnFtBotRepository {
+	return &bnFtBotRepository{
+		client: client,
+	}
+}
+
+func (d *bnFtBotRepository) Get(ctx context.Context, botID string) (*models.BnFtBot, error) {
 	table := models.NewBnFtBotTable()
 	table.BotID = botID
 	result := &models.BnFtBot{}
-	response, err := d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	response, err := d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyByBotID(),
 	})

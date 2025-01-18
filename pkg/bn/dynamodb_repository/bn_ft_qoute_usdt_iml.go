@@ -13,13 +13,23 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error) {
+type bnFtQouteUSDTRepository struct {
+	client *dynamodb.Client
+}
+
+func NewConnectionBnFtQouteUSDTRepository(client *dynamodb.Client) IBnFtQouteUSDTRepository {
+	return &bnFtQouteUSDTRepository{
+		client: client,
+	}
+}
+
+func (d *bnFtQouteUSDTRepository) Get(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
 	result := &models.BnFtQouteUSDT{}
 	table := models.NewBinanceFutureQouteUSTDTable()
 	table.Symbol = symbol
-	response, err = d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	response, err = d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBySymbol(),
 	})
@@ -34,9 +44,9 @@ func (d *dynamoDBRepository) GetQouteUSDT(ctx context.Context, symbol string) (*
 	return result, nil
 }
 
-func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error {
-	table := models.NewBinanceFutureQouteUSTDTable()
-	table.BnFtQouteUSDT = qouteUSDT
+func (d *bnFtQouteUSDTRepository) Update(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error {
+	table := models.NewBinanceFutureQouteUSTDTableWith(qouteUSDT)
+	table.Transform()
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBySymbol(),
@@ -51,17 +61,17 @@ func (d *dynamoDBRepository) UpdateQouteUSDT(ctx context.Context, qouteUSDT *mod
 			// ":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
 		},
 	}
-	_, err := d.dynamodb.UpdateItem(ctx, input)
+	_, err := d.client.UpdateItem(ctx, input)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *dynamoDBRepository) InsertNewSymbolQouteUSDT(ctx context.Context, data *models.BnFtQouteUSDT) error {
-	table := models.NewBinanceFutureQouteUSTDTable()
-	table.BnFtQouteUSDT = data
-	item, err := attributevalue.MarshalMap(table.BnFtQouteUSDT)
+func (d *bnFtQouteUSDTRepository) Insert(ctx context.Context, data *models.BnFtQouteUSDT) error {
+	table := models.NewBinanceFutureQouteUSTDTableWith(data)
+	table.Transform()
+	item, err := attributevalue.MarshalMap(table.GetData())
 	if err != nil {
 		log.Fatalf("Got error marshalling new movie item: %s", err)
 	}
@@ -69,7 +79,7 @@ func (d *dynamoDBRepository) InsertNewSymbolQouteUSDT(ctx context.Context, data 
 		TableName: aws.String(table.GetTableName()),
 		Item:      item,
 	}
-	_, err = d.dynamodb.PutItem(ctx, input)
+	_, err = d.client.PutItem(ctx, input)
 	if err != nil {
 		return err
 	}

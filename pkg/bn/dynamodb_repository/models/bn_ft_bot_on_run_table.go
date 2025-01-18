@@ -2,6 +2,7 @@ package dynamodbrepository
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -16,6 +17,16 @@ func NewBinanceFutureBotOnRunTable(botOnRun *BnFtBotOnRun) *BnFtBotOnRunTable {
 	return &BnFtBotOnRunTable{
 		BnFtBotOnRun: botOnRun,
 	}
+}
+
+func NewBinanceFutureBotOnRunTableWith(botOnRun *BnFtBotOnRun) *BnFtBotOnRunTable {
+	return &BnFtBotOnRunTable{
+		BnFtBotOnRun: botOnRun,
+	}
+}
+
+func (b *BnFtBotOnRunTable) GetData() *BnFtBotOnRun {
+	return b.BnFtBotOnRun
 }
 
 func (b *BnFtBotOnRunTable) GetTableName() string {
@@ -68,4 +79,9 @@ func (b *BnFtBotOnRunTable) GetAmountQtyTableField() string {
 func (b *BnFtBotOnRunTable) GetIsActiveTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "IsActive", "dynamodb")
 	return v
+}
+
+func (b *BnFtBotOnRunTable) Transform() {
+	b.Symbol = strings.ToUpper(b.Symbol)
+	b.PositionSide = strings.ToUpper(b.PositionSide)
 }

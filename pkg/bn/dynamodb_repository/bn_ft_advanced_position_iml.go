@@ -9,10 +9,22 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetAdvancedPositionBySymbolAndPositionSide(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) (*models.BnFtAdvancedPositionModel, error) {
-	table := models.NewBinanceFutureAdvancedPositionTableWithData(advancedPosition)
+type bnFtAdvancedPositionRepository struct {
+	client *dynamodb.Client
+}
+
+func NewConnectionBnFtAdvancedPositionRepository(client *dynamodb.Client) IBnFtAdvancedPositionRepository {
+	return &bnFtAdvancedPositionRepository{
+		client: client,
+	}
+}
+
+func (d *bnFtAdvancedPositionRepository) Get(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) (*models.BnFtAdvancedPositionModel, error) {
+	table := models.NewBinanceFutureAdvancedPositionTableWith(advancedPosition)
+	table.Transform()
+	table.SetCreatedAt()
 	result := models.BnFtAdvancedPositionModel{}
-	response, err := d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	response, err := d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKey(),
 	})
@@ -26,13 +38,15 @@ func (d *dynamoDBRepository) GetAdvancedPositionBySymbolAndPositionSide(ctx cont
 	return &result, nil
 }
 
-func (d *dynamoDBRepository) InsertAdvancedPosition(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error {
-	table := models.NewBinanceFutureAdvancedPositionTableWithData(advancedPosition)
+func (d *bnFtAdvancedPositionRepository) Insert(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error {
+	table := models.NewBinanceFutureAdvancedPositionTableWith(advancedPosition)
+	table.Transform()
+	table.SetCreatedAt()
 	item, err := attributevalue.MarshalMap(advancedPosition)
 	if err != nil {
 		return err
 	}
-	_, err = d.dynamodb.PutItem(ctx, &dynamodb.PutItemInput{
+	_, err = d.client.PutItem(ctx, &dynamodb.PutItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Item:      item,
 	})
@@ -42,9 +56,10 @@ func (d *dynamoDBRepository) InsertAdvancedPosition(ctx context.Context, advance
 	return nil
 }
 
-func (d *dynamoDBRepository) DeleteAdvancedPosition(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error {
-	table := models.NewBinanceFutureAdvancedPositionTableWithData(advancedPosition)
-	_, err := d.dynamodb.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+func (d *bnFtAdvancedPositionRepository) Delete(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error {
+	table := models.NewBinanceFutureAdvancedPositionTableWith(advancedPosition)
+	table.Transform()
+	_, err := d.client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKey(),
 	})

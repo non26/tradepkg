@@ -18,6 +18,16 @@ func NewBnFtBotTable() *BnFtBotTable {
 	}
 }
 
+func NewBnFtBotTableWith(bot *BnFtBot) *BnFtBotTable {
+	return &BnFtBotTable{
+		BnFtBot: bot,
+	}
+}
+
+func (b *BnFtBotTable) GetData() *BnFtBot {
+	return b.BnFtBot
+}
+
 func (b *BnFtBotTable) GetTableName() string {
 	return utils.GetStructTagValueByIndex(reflect.TypeOf(b).Elem(), "table", 0)
 }

@@ -2,6 +2,7 @@ package dynamodbrepository
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -16,6 +17,16 @@ func NewBinanceFutureOpeningPositionTable() *BnFtOpeningPositionTable {
 	return &BnFtOpeningPositionTable{
 		BnFtOpeningPosition: NewBinanceFutureOpeningPosition(),
 	}
+}
+
+func NewBinanceFutureOpeningPositionTableWith(openingPosition *BnFtOpeningPosition) *BnFtOpeningPositionTable {
+	return &BnFtOpeningPositionTable{
+		BnFtOpeningPosition: openingPosition,
+	}
+}
+
+func (b *BnFtOpeningPositionTable) GetData() *BnFtOpeningPosition {
+	return b.BnFtOpeningPosition
 }
 
 func (b *BnFtOpeningPositionTable) GetTableName() string {
@@ -79,4 +90,11 @@ func (b *BnFtOpeningPositionTable) GetKeyByPositionSideAndSymbol() map[string]ty
 		"position_side": &types.AttributeValueMemberS{Value: b.PositionSide},
 		"symbol":        &types.AttributeValueMemberS{Value: b.Symbol},
 	}
+}
+
+func (b *BnFtOpeningPositionTable) Transform() {
+	b.Symbol = strings.ToUpper(b.Symbol)
+	b.PositionSide = strings.ToUpper(b.PositionSide)
+	b.Side = strings.ToUpper(b.Side)
+	b.OrderType = strings.ToUpper(b.OrderType)
 }

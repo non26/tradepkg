@@ -2,6 +2,7 @@ package dynamodbrepository
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -16,6 +17,24 @@ func NewBinanceFutureQouteUSTDTable() *BnFtQouteUSTDTable {
 	return &BnFtQouteUSTDTable{
 		BnFtQouteUSDT: NewBnFtQouteUSDT(),
 	}
+}
+
+func NewBinanceFutureQouteUSTDTableWith(qouteUSDT *BnFtQouteUSDT) *BnFtQouteUSTDTable {
+	return &BnFtQouteUSTDTable{
+		BnFtQouteUSDT: qouteUSDT,
+	}
+}
+
+func NewBinanceFutureQouteUSTDTableRecord(symbol string, is_long bool) *BnFtQouteUSDT {
+	table := NewBnFtQouteUSDT()
+	table.Symbol = symbol
+	table.CountingLong = 0
+	table.CountingShort = 0
+	return table
+}
+
+func (b *BnFtQouteUSTDTable) GetData() *BnFtQouteUSDT {
+	return b.BnFtQouteUSDT
 }
 
 func (b *BnFtQouteUSTDTable) GetTableName() string {
@@ -46,4 +65,8 @@ func (b *BnFtQouteUSTDTable) GetCountingShortTableField() string {
 func (b *BnFtQouteUSTDTable) GetCurrentLeverageTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CurrentLeverage", "dynamodb")
 	return v
+}
+
+func (b *BnFtQouteUSTDTable) Transform() {
+	b.Symbol = strings.ToUpper(b.Symbol)
 }

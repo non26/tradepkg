@@ -10,28 +10,21 @@ import (
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
 )
 
-func (d *dynamoDBRepository) GetAllHistory(ctx context.Context) ([]models.BnFtHistory, error) {
-	table := models.NewBinanceFutureHistoryTable()
-	result := []models.BnFtHistory{}
-	response, err := d.dynamodb.Scan(ctx, &dynamodb.ScanInput{
-		TableName: aws.String(table.GetTableName()),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+type bnFtHistoryRepository struct {
+	client *dynamodb.Client
 }
 
-func (d *dynamoDBRepository) GetHistoryByClientID(ctx context.Context, clientId string) (*models.BnFtHistory, error) {
+func NewConnectionBnFtHistoryRepository(client *dynamodb.Client) IBnFtHistoryRepository {
+	return &bnFtHistoryRepository{
+		client: client,
+	}
+}
+
+func (d *bnFtHistoryRepository) Get(ctx context.Context, clientId string) (*models.BnFtHistory, error) {
 	table := models.NewBinanceFutureHistoryTable()
 	table.ClientId = clientId
 	result := &models.BnFtHistory{}
-	response, err := d.dynamodb.GetItem(ctx, &dynamodb.GetItemInput{
+	response, err := d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyClientID(),
 	})
@@ -46,13 +39,15 @@ func (d *dynamoDBRepository) GetHistoryByClientID(ctx context.Context, clientId 
 	return result, nil
 }
 
-func (d *dynamoDBRepository) InsertHistory(ctx context.Context, history *models.BnFtHistory) error {
-	table := models.NewBinanceFutureHistoryTable()
-	item, err := attributevalue.MarshalMap(history)
+func (d *bnFtHistoryRepository) Insert(ctx context.Context, history *models.BnFtHistory) error {
+	table := models.NewBinanceFutureHistoryTableWith(history)
+	table.Transform()
+	table.SetCreatedAt()
+	item, err := attributevalue.MarshalMap(table.GetData())
 	if err != nil {
 		return err
 	}
-	_, err = d.dynamodb.PutItem(ctx, &dynamodb.PutItemInput{
+	_, err = d.client.PutItem(ctx, &dynamodb.PutItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Item:      item,
 	})
@@ -62,13 +57,14 @@ func (d *dynamoDBRepository) InsertHistory(ctx context.Context, history *models.
 	return nil
 }
 
-func (d *dynamoDBRepository) UpdateHistory(ctx context.Context, history *models.BnFtHistory) error {
-	table := models.NewBinanceFutureHistoryTable()
-	item, err := attributevalue.MarshalMap(history)
+func (d *bnFtHistoryRepository) Update(ctx context.Context, history *models.BnFtHistory) error {
+	table := models.NewBinanceFutureHistoryTableWith(history)
+	table.Transform()
+	item, err := attributevalue.MarshalMap(table.GetData())
 	if err != nil {
 		return err
 	}
-	_, err = d.dynamodb.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+	_, err = d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyClientID(),
 		UpdateExpression: aws.String(fmt.Sprintf(
