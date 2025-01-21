@@ -1,4 +1,4 @@
-package binanceresponse
+package bnresponse
 
 type ResponseBinanceFutureError struct {
 	Code    int    `json:"code"`

@@ -1,4 +1,4 @@
-package binanceresponse
+package bnresponse
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"reflect"
 
-	models "github.com/non26/tradepkg/pkg/bn/binance_response/models"
+	models "github.com/non26/tradepkg/pkg/bn/bn_response/models"
 	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 

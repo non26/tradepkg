@@ -42,3 +42,10 @@ type IBnFtAdvancedPositionRepository interface {
 	Insert(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
 	Delete(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
 }
+
+type IBnFtAccumulationRepository interface {
+	Get(ctx context.Context, accumulation *models.BnFtAccumulation) (*models.BnFtAccumulation, error)
+	Update(ctx context.Context, accumulation *models.BnFtAccumulation) error
+	Insert(ctx context.Context, accumulation *models.BnFtAccumulation) error
+	Delete(ctx context.Context, accumulation *models.BnFtAccumulation) error
+}

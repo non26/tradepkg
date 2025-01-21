@@ -1,4 +1,4 @@
-package binancemodel
+package bnmodel
 
 type IBnFutureServiceRequest interface {
 	PrepareRequest()

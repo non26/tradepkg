@@ -1,4 +1,4 @@
-package binanceclient
+package bnclient
 
 import (
 	"net/http"
