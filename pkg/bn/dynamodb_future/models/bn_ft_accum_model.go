@@ -1,4 +1,4 @@
-package dynamodbrepository
+package dynamodbfuture
 
 type BnFtAccumulation struct {
 	AccumulateID   string `dynamodbav:"accumulate_id" dynamodb:"accumulate_id"`

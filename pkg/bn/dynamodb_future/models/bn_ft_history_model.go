@@ -1,4 +1,4 @@
-package dynamodbrepository
+package dynamodbfuture
 
 type BnFtHistory struct {
 	ClientId     string `dynamodbav:"client_id" dynamodb:"client_id"`

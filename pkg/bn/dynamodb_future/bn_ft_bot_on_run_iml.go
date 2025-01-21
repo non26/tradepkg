@@ -1,4 +1,4 @@
-package dynamodbrepository
+package dynamodbfuture
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
+	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
 )
 
 type bnFtBotOnRunRepository struct {

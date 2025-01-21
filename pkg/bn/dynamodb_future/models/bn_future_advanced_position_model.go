@@ -1,4 +1,4 @@
-package dynamodbrepository
+package dynamodbfuture
 
 type BnFtAdvancedPositionModel struct {
 	Symbol         string `dynamodbav:"symbol" dynamodb:"symbol"`       // primary key

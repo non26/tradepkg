@@ -1,4 +1,4 @@
-package dynamodbrepository
+package dynamodbfuture
 
 type BnFtBot struct {
 	BotID   string `dynamodbav:"bot_id" dynamodb:"bot_id"`

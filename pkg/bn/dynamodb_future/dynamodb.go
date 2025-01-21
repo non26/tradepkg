@@ -1,9 +1,9 @@
-package dynamodbrepository
+package dynamodbfuture
 
 import (
 	"context"
 
-	models "github.com/non26/tradepkg/pkg/bn/dynamodb_repository/models"
+	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
 )
 
 type IBnFtOpeningPositionRepository interface {
