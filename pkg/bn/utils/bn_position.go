@@ -31,3 +31,11 @@ func IsSellPosition(side string, position_side string) bool {
 		return false
 	}
 }
+
+func IsLongPosition(position_side string) bool {
+	return position_side == constant.LONG
+}
+
+func IsShortPosition(position_side string) bool {
+	return position_side == constant.SHORT
+}
