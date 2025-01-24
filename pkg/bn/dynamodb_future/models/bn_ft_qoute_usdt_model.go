@@ -5,10 +5,9 @@ import (
 )
 
 type BnFtQouteUSDT struct {
-	Symbol string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
-	// CurrentLeverage int    `dynamodb:"current_leverage" dynamodbav:"current_leverage"`
-	CountingLong  int `dynamodb:"counting_long" dynamodbav:"counting_long"`
-	CountingShort int `dynamodb:"counting_short" dynamodbav:"counting_short"`
+	Symbol        string `dynamodb:"symbol" dynamodbav:"symbol"` // primary key
+	CountingLong  int    `dynamodb:"counting_long" dynamodbav:"counting_long"`
+	CountingShort int    `dynamodb:"counting_short" dynamodbav:"counting_short"`
 }
 
 type counting int

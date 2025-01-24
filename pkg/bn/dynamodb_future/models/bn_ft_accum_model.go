@@ -1,12 +1,12 @@
 package dynamodbfuture
 
 type BnFtAccumulation struct {
-	AccumulateID   string `dynamodbav:"accumulate_id" dynamodb:"accumulate_id"`
+	AccumulationID string `dynamodbav:"accumulation_id" dynamodb:"accumulation_id"`
 	Symbol         string `dynamodbav:"symbol" dynamodb:"symbol"`
 	Side           string `dynamodbav:"side" dynamodb:"side"`
 	PositionSide   string `dynamodbav:"position_side" dynamodb:"position_side"`
-	TotalAmountQ   string `dynamodbav:"total_amount_q" dynamodb:"total_amount_q"`
-	CurrentAmountQ string `dynamodbav:"current_amount_q" dynamodb:"current_amount_q"`
+	TotalAmountB   string `dynamodbav:"total_amount_b" dynamodb:"total_amount_b"`
+	CurrentAmountB string `dynamodbav:"current_amount_b" dynamodb:"current_amount_b"`
 }
 
 func NewBnFtAccumulation() *BnFtAccumulation {
@@ -15,21 +15,21 @@ func NewBnFtAccumulation() *BnFtAccumulation {
 
 func NewBnFtAccumulationWith(accumulation *BnFtAccumulation) *BnFtAccumulation {
 	return &BnFtAccumulation{
-		AccumulateID:   accumulation.AccumulateID,
+		AccumulationID: accumulation.AccumulationID,
 		Symbol:         accumulation.Symbol,
 		Side:           accumulation.Side,
 		PositionSide:   accumulation.PositionSide,
-		TotalAmountQ:   accumulation.TotalAmountQ,
-		CurrentAmountQ: accumulation.CurrentAmountQ,
+		TotalAmountB:   accumulation.TotalAmountB,
+		CurrentAmountB: accumulation.CurrentAmountB,
 	}
 }
 
 func (b *BnFtAccumulation) GetAccumulateID() string {
-	return b.AccumulateID
+	return b.AccumulationID
 }
 
 func (b *BnFtAccumulation) SetAccumulateID(accumulateID string) {
-	b.AccumulateID = accumulateID
+	b.AccumulationID = accumulateID
 }
 
 func (b *BnFtAccumulation) GetSymbol() string {
@@ -57,17 +57,17 @@ func (b *BnFtAccumulation) SetPositionSide(positionSide string) {
 }
 
 func (b *BnFtAccumulation) GetTotalAmountQ() string {
-	return b.TotalAmountQ
+	return b.TotalAmountB
 }
 
 func (b *BnFtAccumulation) SetTotalAmountQ(totalAmountQ string) {
-	b.TotalAmountQ = totalAmountQ
+	b.TotalAmountB = totalAmountQ
 }
 
 func (b *BnFtAccumulation) GetCurrentAmountQ() string {
-	return b.CurrentAmountQ
+	return b.CurrentAmountB
 }
 
 func (b *BnFtAccumulation) SetCurrentAmountQ(currentAmountQ string) {
-	b.CurrentAmountQ = currentAmountQ
+	b.CurrentAmountB = currentAmountQ
 }

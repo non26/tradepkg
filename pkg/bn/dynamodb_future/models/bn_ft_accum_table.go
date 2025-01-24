@@ -33,12 +33,12 @@ func (b *BnFtAccumulationTable) GetTableName() string {
 
 func (b *BnFtAccumulationTable) GetKey() map[string]types.AttributeValue {
 	return map[string]types.AttributeValue{
-		"accumulate_id": &types.AttributeValueMemberS{Value: b.AccumulateID},
+		"accumulate_id": &types.AttributeValueMemberS{Value: b.AccumulationID},
 	}
 }
 
 func (b *BnFtAccumulationTable) GetAccumulateIDTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AccumulateID", "dynamodb")
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AccumulationID", "dynamodb")
 	return v
 }
 

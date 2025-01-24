@@ -2,7 +2,6 @@ package dynamodbfuture
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -57,23 +56,23 @@ func (d *bnFtHistoryRepository) Insert(ctx context.Context, history *models.BnFt
 	return nil
 }
 
-func (d *bnFtHistoryRepository) Update(ctx context.Context, history *models.BnFtHistory) error {
-	table := models.NewBinanceFutureHistoryTableWith(history)
-	table.Transform()
-	item, err := attributevalue.MarshalMap(table.GetData())
-	if err != nil {
-		return err
-	}
-	_, err = d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
-		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyClientID(),
-		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :history_id, %v = :symbol, %v = :position_side",
-			table.GetHistoryIdTableField(),
-			table.GetSymbolTableField(),
-			table.GetPositionSideTableField(),
-		)),
-		ExpressionAttributeValues: item,
-	})
-	return err
-}
+// func (d *bnFtHistoryRepository) Update(ctx context.Context, history *models.BnFtHistory) error {
+// 	table := models.NewBinanceFutureHistoryTableWith(history)
+// 	table.Transform()
+// 	item, err := attributevalue.MarshalMap(table.GetData())
+// 	if err != nil {
+// 		return err
+// 	}
+// 	_, err = d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+// 		TableName: aws.String(table.GetTableName()),
+// 		Key:       table.GetKeyClientID(),
+// 		UpdateExpression: aws.String(fmt.Sprintf(
+// 			"set %v = :history_id, %v = :symbol, %v = :position_side",
+// 			table.GetHistoryIdTableField(),
+// 			table.GetSymbolTableField(),
+// 			table.GetPositionSideTableField(),
+// 		)),
+// 		ExpressionAttributeValues: item,
+// 	})
+// 	return err
+// }

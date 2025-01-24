@@ -57,11 +57,6 @@ func (b *BnFtAdvancedPositionTable) GetPositionSideTableField() string {
 	return v
 }
 
-func (b *BnFtAdvancedPositionTable) GetAmountQTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountQ", "dynamodb")
-	return v
-}
-
 func (b *BnFtAdvancedPositionTable) GetAmountBTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
 	return v

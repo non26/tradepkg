@@ -52,11 +52,6 @@ func (b *BnFtOpeningPositionTable) GetClientIdTableField() string {
 	return v
 }
 
-func (b *BnFtOpeningPositionTable) GetAmountQTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountQ", "dynamodb")
-	return v
-}
-
 func (b *BnFtOpeningPositionTable) GetAmountBTableField() string {
 	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
 	return v

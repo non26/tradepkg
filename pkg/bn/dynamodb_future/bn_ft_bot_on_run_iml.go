@@ -72,7 +72,7 @@ func (d *bnFtBotOnRunRepository) Update(ctx context.Context, botOnRun *models.Bn
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":symbol":        &types.AttributeValueMemberS{Value: table.Symbol},
 			":position_side": &types.AttributeValueMemberS{Value: table.PositionSide},
-			":amount_q":      &types.AttributeValueMemberS{Value: table.AmountQoute},
+			":amount_b":      &types.AttributeValueMemberS{Value: table.AmountB},
 			":is_active":     &types.AttributeValueMemberBOOL{Value: table.IsActive},
 		},
 	})

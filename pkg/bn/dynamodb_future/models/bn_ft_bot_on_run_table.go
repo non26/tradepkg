@@ -72,7 +72,7 @@ func (b *BnFtBotOnRunTable) GetPositionConditionTableField() string {
 }
 
 func (b *BnFtBotOnRunTable) GetAmountQtyTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountQoute", "dynamodb")
+	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
 	return v
 }
 

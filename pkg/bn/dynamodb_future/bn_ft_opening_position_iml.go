@@ -147,8 +147,7 @@ func (d *bnFtOpeningPositionRepository) Update(ctx context.Context, openOrder *m
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyByPositionSideAndSymbol(),
 		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :amount_q, %v = :amount_b, %v = :watching_config, %v = :order_type, %v = :client_id, %v = :leverage",
-			table.GetAmountQTableField(),
+			"set %v = :amount_b, %v = :watching_config, %v = :order_type, %v = :client_id, %v = :leverage",
 			table.GetAmountBTableField(),
 			table.GetWatchingConfigTableField(),
 			table.GetOrderTypeTableField(),
@@ -156,7 +155,6 @@ func (d *bnFtOpeningPositionRepository) Update(ctx context.Context, openOrder *m
 			table.GetLeverageTableField(),
 		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":amount_q":        &types.AttributeValueMemberS{Value: openOrder.AmountQ},
 			":amount_b":        &types.AttributeValueMemberS{Value: openOrder.AmountB},
 			":watching_config": &types.AttributeValueMemberS{Value: openOrder.WatchingConfig},
 			":order_type":      &types.AttributeValueMemberS{Value: openOrder.OrderType},

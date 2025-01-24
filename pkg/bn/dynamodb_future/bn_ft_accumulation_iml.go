@@ -33,8 +33,8 @@ func (d *bnFtAccumulationRepository) Get(ctx context.Context, accumulation *mode
 	}
 	if response.Item == nil {
 		return models.NewBnFtAccumulationWith(&models.BnFtAccumulation{
-			TotalAmountQ:   "0",
-			CurrentAmountQ: "0",
+			TotalAmountB:   "0",
+			CurrentAmountB: "0",
 		}), nil
 	}
 
@@ -77,10 +77,10 @@ func (d *bnFtAccumulationRepository) Update(ctx context.Context, accumulation *m
 	_, err := d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName:        aws.String(table.GetTableName()),
 		Key:              table.GetKey(),
-		UpdateExpression: aws.String("set TotalAmountQ = :totalAmountQ, CurrentAmountQ = :currentAmountQ"),
+		UpdateExpression: aws.String("set TotalAmountB = :totalAmountB, CurrentAmountB = :currentAmountB"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":totalAmountQ":   &types.AttributeValueMemberN{Value: table.TotalAmountQ},
-			":currentAmountQ": &types.AttributeValueMemberN{Value: table.CurrentAmountQ},
+			":totalAmountB":   &types.AttributeValueMemberN{Value: table.TotalAmountB},
+			":currentAmountB": &types.AttributeValueMemberN{Value: table.CurrentAmountB},
 		},
 	})
 	return err
