@@ -39,3 +39,17 @@ func IsLongPosition(position_side string) bool {
 func IsShortPosition(position_side string) bool {
 	return position_side == constant.SHORT
 }
+
+func ToSellSideBy(position_side string) string {
+	if IsLongPosition(position_side) {
+		return constant.SELL
+	}
+	return constant.BUY
+}
+
+func ToBuySideBy(position_side string) string {
+	if IsLongPosition(position_side) {
+		return constant.BUY
+	}
+	return constant.SELL
+}

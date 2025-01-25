@@ -41,6 +41,7 @@ type IBnFtAdvancedPositionRepository interface {
 	Get(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) (*models.BnFtAdvancedPositionModel, error)
 	Insert(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
 	Delete(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
+	ScanWith(ctx context.Context, clientId string) (*models.BnFtAdvancedPositionModel, error)
 }
 
 type IBnFtAccumulationRepository interface {

@@ -1,0 +1,14 @@
+package serviceerror
+
+var (
+	BN_OPENING_POSITION_ERROR  = "9001"
+	BN_HISTORY_ERROR           = "9002"
+	BN_QOUTE_USDT_ERROR        = "9003"
+	BN_ADVANCED_POSITION_ERROR = "9004"
+	BN_ACCUMULATION_ERROR      = "9005"
+	BN_BOT_ON_RUN_ERROR        = "9006"
+	BN_BOT_ERROR               = "9007"
+	BN_LEVERAGE_ERROR          = "9008"
+
+	BN_COMMON_ERROR = "9999"
+)

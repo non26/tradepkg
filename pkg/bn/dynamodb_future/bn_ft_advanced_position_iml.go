@@ -2,6 +2,7 @@ package dynamodbfuture
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -64,4 +65,36 @@ func (d *bnFtAdvancedPositionRepository) Delete(ctx context.Context, advancedPos
 		Key:       table.GetKey(),
 	})
 	return err
+}
+
+func (d *bnFtAdvancedPositionRepository) ScanWith(ctx context.Context, clientId string) (*models.BnFtAdvancedPositionModel, error) {
+	var err error
+	var response *dynamodb.ScanOutput
+	result := models.BnFtAdvancedPositionModel{}
+	table := models.NewBinanceFutureAdvancedPositionTable()
+	table.ClientId = clientId
+	response, err = d.client.Scan(ctx, &dynamodb.ScanInput{
+		TableName: aws.String(table.GetTableName()),
+		// Optional: Add a filter expression
+		FilterExpression: aws.String("contains(#client_id, :value)"),
+		ExpressionAttributeNames: map[string]string{
+			"#client_id": "client_id", // Field name in DynamoDB table
+		},
+		ExpressionAttributeValues: table.GetKeyByClientId(),
+	})
+	if err != nil {
+		log.Fatalf("Failed to perform scan: %v", err)
+		return nil, err
+	}
+
+	if len(response.Items) == 0 {
+		return &models.BnFtAdvancedPositionModel{}, nil
+	}
+
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal items: %v", err)
+		return nil, err
+	}
+	return &result, nil
 }
