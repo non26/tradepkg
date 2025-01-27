@@ -11,7 +11,7 @@ type IBnFtOpeningPositionRepository interface {
 	Get(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error)
 	ScanWith(ctx context.Context, clientId string) (*models.BnFtOpeningPosition, error)
 	Insert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
-	Update(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
+	UpdateAmountB(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	Delete(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 }
 
@@ -35,18 +35,4 @@ type IBnFtBotOnRunRepository interface {
 
 type IBnFtBotRepository interface {
 	Get(ctx context.Context, botID string) (*models.BnFtBot, error)
-}
-
-type IBnFtAdvancedPositionRepository interface {
-	Get(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) (*models.BnFtAdvancedPositionModel, error)
-	Insert(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
-	Delete(ctx context.Context, advancedPosition *models.BnFtAdvancedPositionModel) error
-	ScanWith(ctx context.Context, clientId string) (*models.BnFtAdvancedPositionModel, error)
-}
-
-type IBnFtAccumulationRepository interface {
-	Get(ctx context.Context, accumulation *models.BnFtAccumulation) (*models.BnFtAccumulation, error)
-	Update(ctx context.Context, accumulation *models.BnFtAccumulation) error
-	Insert(ctx context.Context, accumulation *models.BnFtAccumulation) error
-	Delete(ctx context.Context, accumulation *models.BnFtAccumulation) error
 }
