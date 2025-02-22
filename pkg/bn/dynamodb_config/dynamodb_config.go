@@ -1,4 +1,4 @@
-package dynamodbfuture
+package dynamodbconfig
 
 import (
 	"context"

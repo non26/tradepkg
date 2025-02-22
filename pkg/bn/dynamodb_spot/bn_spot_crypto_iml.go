@@ -1,4 +1,4 @@
-package dynamodbfuture
+package dynamodbspot
 
 import (
 	"context"
@@ -10,24 +10,24 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
+	models "github.com/non26/tradepkg/pkg/bn/dynamodb_spot/models"
 )
 
-type bnFtQouteUSDTRepository struct {
+type bnSpotCryptoRepository struct {
 	client *dynamodb.Client
 }
 
-func NewConnectionBnFtQouteUSDTRepository(client *dynamodb.Client) IBnFtQouteUSDTRepository {
-	return &bnFtQouteUSDTRepository{
+func NewConnectionBnSpotCryptoRepository(client *dynamodb.Client) IBnSpotCryptoRepository {
+	return &bnSpotCryptoRepository{
 		client: client,
 	}
 }
 
-func (d *bnFtQouteUSDTRepository) Get(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error) {
+func (d *bnSpotCryptoRepository) Get(ctx context.Context, symbol string) (*models.BnSpotCrypto, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := &models.BnFtQouteUSDT{}
-	table := models.NewBinanceFutureQouteUSTDTable()
+	result := &models.BnSpotCrypto{}
+	table := models.NewBinanceSpotCryptoTable()
 	table.Symbol = symbol
 	response, err = d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
@@ -44,21 +44,19 @@ func (d *bnFtQouteUSDTRepository) Get(ctx context.Context, symbol string) (*mode
 	return result, nil
 }
 
-func (d *bnFtQouteUSDTRepository) Update(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error {
-	table := models.NewBinanceFutureQouteUSTDTableWith(qouteUSDT)
+func (d *bnSpotCryptoRepository) Update(ctx context.Context, qouteUSDT *models.BnSpotCrypto) error {
+	table := models.NewBinanceSpotCryptoTableWith(qouteUSDT)
 	table.Transform()
+	countingLong, _ := table.GetCountingTableField()
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBySymbol(),
 		UpdateExpression: aws.String(fmt.Sprintf(
-			"set %v = :counting_long, %v = :counting_short",
-			table.GetCountingLongTableField(),
-			table.GetCountingShortTableField(),
+			"set %v = :counting",
+			countingLong,
 		)),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":counting_long":  &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCountingLong())},
-			":counting_short": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCountingShort())},
-			// ":current_leverage": &types.AttributeValueMemberN{Value: strconv.Itoa(table.GetCurrentLeverage())},
+			":counting": &types.AttributeValueMemberN{Value: strconv.FormatInt(table.GetCounting(), 10)},
 		},
 	}
 	_, err := d.client.UpdateItem(ctx, input)
@@ -68,8 +66,8 @@ func (d *bnFtQouteUSDTRepository) Update(ctx context.Context, qouteUSDT *models.
 	return nil
 }
 
-func (d *bnFtQouteUSDTRepository) Insert(ctx context.Context, data *models.BnFtQouteUSDT) error {
-	table := models.NewBinanceFutureQouteUSTDTableWith(data)
+func (d *bnSpotCryptoRepository) Insert(ctx context.Context, data *models.BnSpotCrypto) error {
+	table := models.NewBinanceSpotCryptoTableWith(data)
 	table.Transform()
 	item, err := attributevalue.MarshalMap(table.GetData())
 	if err != nil {

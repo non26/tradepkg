@@ -13,12 +13,14 @@ type IBnFtOpeningPositionRepository interface {
 	Insert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	UpdateAmountB(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	Delete(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
+	Upsert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 }
 
-type IBnFtQouteUSDTRepository interface {
-	Get(ctx context.Context, symbol string) (*models.BnFtQouteUSDT, error)
-	Update(ctx context.Context, qouteUSDT *models.BnFtQouteUSDT) error
-	Insert(ctx context.Context, data *models.BnFtQouteUSDT) error
+type IBnFtCryptoRepository interface {
+	Get(ctx context.Context, symbol string) (*models.BnFtCrypto, error)
+	Update(ctx context.Context, qouteUSDT *models.BnFtCrypto) error
+	Insert(ctx context.Context, data *models.BnFtCrypto) error
+	Upsert(ctx context.Context, data *models.BnFtCrypto) error
 }
 
 type IBnFtHistoryRepository interface {

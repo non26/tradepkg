@@ -37,31 +37,40 @@ func (b *BnFtOpeningPositionTable) SetCreatedAt() {
 	b.CreatedAt = utils.GetDBTime()
 }
 
-func (b *BnFtOpeningPositionTable) GetLeverageTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Leverage", "dynamodb")
-	return v
+func (b *BnFtOpeningPositionTable) GetSymbolTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtOpeningPositionTable) GetOrderTypeTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "OrderType", "dynamodb")
-	return v
+func (b *BnFtOpeningPositionTable) GetPositionSideTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtOpeningPositionTable) GetClientIdTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "ClientId", "dynamodb")
-	return v
+func (b *BnFtOpeningPositionTable) GetSideTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Side", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtOpeningPositionTable) GetAmountBTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
-	return v
+func (b *BnFtOpeningPositionTable) GetCreatedAtTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CreatedAt", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtOpeningPositionTable) GetWatchingConfigTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "WatchingConfig", "dynamodb")
-	return v
+func (b *BnFtOpeningPositionTable) GetOrderTypeTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "OrderType", "dynamodb")
+	return v, t
 }
 
+func (b *BnFtOpeningPositionTable) GetClientIdTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "ClientId", "dynamodb")
+	return v, t
+}
+
+func (b *BnFtOpeningPositionTable) GetAmountBTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
+	return v, t
+}
 func (b *BnFtOpeningPositionTable) GetKeyBySymbol() map[string]types.AttributeValue {
 	return map[string]types.AttributeValue{
 		"symbol": &types.AttributeValueMemberS{Value: b.Symbol},

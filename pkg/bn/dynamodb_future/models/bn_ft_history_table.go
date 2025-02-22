@@ -33,24 +33,24 @@ func (b *BnFtHistoryTable) GetTableName() string {
 	return utils.GetStructTagValueByIndex(reflect.TypeOf(b).Elem(), "table", 0)
 }
 
-func (b *BnFtHistoryTable) GetHistoryIdTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "HistoryId", "dynamodb")
-	return v
+func (b *BnFtHistoryTable) GetHistoryIdTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "HistoryId", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtHistoryTable) GetSymbolTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
-	return v
+func (b *BnFtHistoryTable) GetSymbolTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtHistoryTable) GetPositionSideTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
-	return v
+func (b *BnFtHistoryTable) GetPositionSideTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtHistoryTable) GetCreatedAtTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CreatedAt", "dynamodb")
-	return v
+func (b *BnFtHistoryTable) GetCreatedAtTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CreatedAt", "dynamodb")
+	return v, t
 }
 
 func (b *BnFtHistoryTable) GetKeyClientID() map[string]types.AttributeValue {

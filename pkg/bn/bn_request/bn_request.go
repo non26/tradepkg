@@ -17,6 +17,11 @@ type IBinanceServiceHttpRequest[T any] interface {
 	GetBinanceRequest() *http.Request
 }
 
+type IBnFutureServiceRequest interface {
+	PrepareRequest()
+	GetData() interface{}
+}
+
 /*
 T is type of request
 */

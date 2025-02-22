@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	binanceclient "github.com/non26/tradepkg/pkg/bn/bn_client"
-	binancemodel "github.com/non26/tradepkg/pkg/bn/bn_model"
 	binancerequest "github.com/non26/tradepkg/pkg/bn/bn_request"
 	binanceresponse "github.com/non26/tradepkg/pkg/bn/bn_response"
 	binanetransport "github.com/non26/tradepkg/pkg/bn/bn_transport"
@@ -18,7 +17,7 @@ generic P for response model
 type ICallBinance[Q, P any] interface {
 	NeedSignature(need_signature bool) ICallBinance[Q, P]
 	CallBinance(
-		request binancemodel.IBnFutureServiceRequest,
+		request binancerequest.IBnFutureServiceRequest,
 		base_url string,
 		end_point string,
 		method string,
@@ -58,7 +57,7 @@ func (c *callBinance[Q, P]) NeedSignature(need_signature bool) ICallBinance[Q, P
 }
 
 func (c *callBinance[Q, P]) CallBinance(
-	request binancemodel.IBnFutureServiceRequest,
+	request binancerequest.IBnFutureServiceRequest,
 	base_url string,
 	end_point string,
 	method string,

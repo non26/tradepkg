@@ -1,4 +1,4 @@
-package dynamodbfuture
+package dynamodbspot
 
 import (
 	"context"
@@ -10,33 +10,33 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	dynamodbconfig "github.com/non26/tradepkg/pkg/bn/dynamodb_config"
-	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
+	models "github.com/non26/tradepkg/pkg/bn/dynamodb_spot/models"
 )
 
-type bnFtOpeningPositionRepository struct {
+type bnSpotOpeningPositionRepository struct {
 	client *dynamodb.Client
 }
 
-func NewConnectionBnFtOpeningPositionRepository(client *dynamodb.Client) IBnFtOpeningPositionRepository {
-	return &bnFtOpeningPositionRepository{
+func NewConnectionBnSpotOpeningPositionRepository(client *dynamodb.Client) IBnSpotOpeningPositionRepository {
+	return &bnSpotOpeningPositionRepository{
 		client: client,
 	}
 }
 
 // return map[string]*models.BnFtOpeningPosition all position in db
 // key is symbol + position_side
-func (d *bnFtOpeningPositionRepository) GetAll(ctx context.Context) (map[string]*models.BnFtOpeningPosition, error) {
+func (d *bnSpotOpeningPositionRepository) GetAll(ctx context.Context) (map[string]*models.BnSpotOpeningPosition, error) {
 	var err error
 	var response *dynamodb.ScanOutput
-	table := models.NewBinanceFutureOpeningPositionTable()
-	result := make([]models.BnFtOpeningPosition, 0)
+	table := models.NewBinanceSpotOpeningPositionTable()
+	result := make([]models.BnSpotOpeningPosition, 0)
 	response, err = d.client.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
 	})
 	if err != nil {
 		return nil, err
 	}
-	openOrders := make(map[string]*models.BnFtOpeningPosition)
+	openOrders := make(map[string]*models.BnSpotOpeningPosition)
 	if len(response.Items) == 0 {
 		return openOrders, nil
 	}
@@ -47,19 +47,19 @@ func (d *bnFtOpeningPositionRepository) GetAll(ctx context.Context) (map[string]
 	}
 
 	for _, openOrder := range result {
-		openOrders[openOrder.Symbol+openOrder.PositionSide] = &openOrder
+		openOrders[openOrder.Symbol] = &openOrder
 	}
 	return openOrders, nil
 }
 
-func (d *bnFtOpeningPositionRepository) Get(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error) {
+func (d *bnSpotOpeningPositionRepository) Get(ctx context.Context, data *models.BnSpotOpeningPosition) (*models.BnSpotOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
-	result := &models.BnFtOpeningPosition{}
-	table := models.NewBinanceFutureOpeningPositionTableWith(data)
+	result := &models.BnSpotOpeningPosition{}
+	table := models.NewBinanceSpotOpeningPositionTableWith(data)
 	response, err = d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyByPositionSideAndSymbol(),
+		Key:       table.GetKeyBySymbol(),
 	})
 	if err != nil {
 		return nil, err
@@ -72,11 +72,11 @@ func (d *bnFtOpeningPositionRepository) Get(ctx context.Context, data *models.Bn
 	return result, nil
 }
 
-func (d *bnFtOpeningPositionRepository) ScanWith(ctx context.Context, client_id string) (*models.BnFtOpeningPosition, error) {
+func (d *bnSpotOpeningPositionRepository) ScanWith(ctx context.Context, client_id string) (*models.BnSpotOpeningPosition, error) {
 	var err error
 	var response *dynamodb.ScanOutput
-	result := []models.BnFtOpeningPosition{}
-	table := models.NewBinanceFutureOpeningPositionTable()
+	result := []models.BnSpotOpeningPosition{}
+	table := models.NewBinanceSpotOpeningPositionTable()
 	table.ClientId = client_id
 	response, err = d.client.Scan(ctx, &dynamodb.ScanInput{
 		TableName: aws.String(table.GetTableName()),
@@ -95,7 +95,7 @@ func (d *bnFtOpeningPositionRepository) ScanWith(ctx context.Context, client_id 
 	}
 
 	if len(response.Items) == 0 {
-		return &models.BnFtOpeningPosition{}, nil
+		return &models.BnSpotOpeningPosition{}, nil
 	}
 
 	err = attributevalue.UnmarshalListOfMaps(response.Items, &result)
@@ -104,17 +104,17 @@ func (d *bnFtOpeningPositionRepository) ScanWith(ctx context.Context, client_id 
 		return nil, err
 	}
 	if len(result) == 0 {
-		return &models.BnFtOpeningPosition{}, nil
+		return &models.BnSpotOpeningPosition{}, nil
 	}
 	return &result[0], nil
 }
 
-func (d *bnFtOpeningPositionRepository) Delete(ctx context.Context, openOrder *models.BnFtOpeningPosition) error {
-	table := models.NewBinanceFutureOpeningPositionTable()
-	table.BnFtOpeningPosition = openOrder
+func (d *bnSpotOpeningPositionRepository) Delete(ctx context.Context, openOrder *models.BnSpotOpeningPosition) error {
+	table := models.NewBinanceSpotOpeningPositionTable()
+	table.BnSpotOpeningPosition = openOrder
 	_, err := d.client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyByPositionSideAndSymbol(),
+		Key:       table.GetKeyBySymbol(),
 	})
 	if err != nil {
 		return err
@@ -122,8 +122,8 @@ func (d *bnFtOpeningPositionRepository) Delete(ctx context.Context, openOrder *m
 	return nil
 }
 
-func (d *bnFtOpeningPositionRepository) Insert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error {
-	table := models.NewBinanceFutureOpeningPositionTableWith(openOrder)
+func (d *bnSpotOpeningPositionRepository) Insert(ctx context.Context, openOrder *models.BnSpotOpeningPosition) error {
+	table := models.NewBinanceSpotOpeningPositionTableWith(openOrder)
 	table.Transform()
 	table.SetCreatedAt()
 	item, err := attributevalue.MarshalMap(table.GetData())
@@ -140,13 +140,13 @@ func (d *bnFtOpeningPositionRepository) Insert(ctx context.Context, openOrder *m
 	return nil
 }
 
-func (d *bnFtOpeningPositionRepository) UpdateAmountB(ctx context.Context, openOrder *models.BnFtOpeningPosition) error {
-	table := models.NewBinanceFutureOpeningPositionTableWith(openOrder)
+func (d *bnSpotOpeningPositionRepository) UpdateAmountB(ctx context.Context, openOrder *models.BnSpotOpeningPosition) error {
+	table := models.NewBinanceSpotOpeningPositionTableWith(openOrder)
 	table.Transform()
 	amountB, _ := table.GetAmountBTableField()
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(table.GetTableName()),
-		Key:       table.GetKeyByPositionSideAndSymbol(),
+		Key:       table.GetKeyBySymbol(),
 		UpdateExpression: aws.String(fmt.Sprintf(
 			"set %v = :amount_b",
 			amountB,
@@ -162,19 +162,17 @@ func (d *bnFtOpeningPositionRepository) UpdateAmountB(ctx context.Context, openO
 	return nil
 }
 
-func (d *bnFtOpeningPositionRepository) Upsert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error {
-	table := models.NewBinanceFutureOpeningPositionTableWith(openOrder)
+func (d *bnSpotOpeningPositionRepository) Upsert(ctx context.Context, openOrder *models.BnSpotOpeningPosition) error {
+	table := models.NewBinanceSpotOpeningPositionTableWith(openOrder)
 	table.SetCreatedAt()
 	update_config := dynamodbconfig.NewUpdateTable(openOrder)
 	update_config.Set(table.GetAmountBTableField, openOrder.AmountB)
 	update_config.Set(table.GetCreatedAtTableField, openOrder.CreatedAt)
 	update_config.Set(table.GetClientIdTableField, openOrder.ClientId)
-	update_config.Set(table.GetOrderTypeTableField, openOrder.OrderType)
-	update_config.Set(table.GetSideTableField, openOrder.Side)
 	expression := update_config.BuildExpression()
 	_, err := d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName:                 aws.String(table.GetTableName()),
-		Key:                       table.GetKeyByPositionSideAndSymbol(),
+		Key:                       table.GetKeyBySymbol(),
 		UpdateExpression:          expression,
 		ExpressionAttributeValues: update_config.GetExpressionAttributeValues(),
 	})

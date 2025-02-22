@@ -1,4 +1,4 @@
-package dynamodbfuture
+package dynamodbconfig
 
 // type dynamoDBRepository struct {
 // 	dynamodb *dynamodb.Client

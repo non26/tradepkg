@@ -46,39 +46,39 @@ func (b *BnFtBotOnRunTable) GetKeyBotID() map[string]types.AttributeValue {
 	}
 }
 
-func (b *BnFtBotOnRunTable) GetBotIDTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotID", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetBotIDTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotID", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetBotOrderIDTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotOrderID", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetBotOrderIDTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "BotOrderID", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetSymbolTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetSymbolTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetPositionSideTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetPositionSideTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetPositionConditionTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetPositionConditionTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetAmountQtyTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetAmountQtyTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
+	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetIsActiveTableField() string {
-	v, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "IsActive", "dynamodb")
-	return v
+func (b *BnFtBotOnRunTable) GetIsActiveTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "IsActive", "dynamodb")
+	return v, t
 }
 
 func (b *BnFtBotOnRunTable) Transform() {
