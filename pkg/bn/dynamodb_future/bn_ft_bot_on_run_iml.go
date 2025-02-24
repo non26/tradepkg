@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	dynamodbconfig "github.com/non26/tradepkg/pkg/bn/dynamodb_config"
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
 )
 
@@ -83,6 +84,24 @@ func (d *bnFtBotOnRunRepository) Delete(ctx context.Context, botOnRun *models.Bn
 	_, err := d.client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyBotIDAndOrderID(),
+	})
+	return err
+}
+
+func (d *bnFtBotOnRunRepository) Upsert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error {
+	table := models.NewBinanceFutureBotOnRunTable(botOnRun)
+	table.Transform()
+	update_config := dynamodbconfig.NewUpdateTable(botOnRun)
+	update_config.Set(table.GetSymbolTableField, botOnRun.Symbol)
+	update_config.Set(table.GetPositionSideTableField, botOnRun.PositionSide)
+	update_config.Set(table.GetAmountQtyTableField, botOnRun.AmountB)
+	update_config.Set(table.GetIsActiveTableField, botOnRun.IsActive)
+	expression := update_config.BuildExpression()
+	_, err := d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(table.GetTableName()),
+		Key:                       table.GetKeyBotIDAndOrderID(),
+		UpdateExpression:          expression,
+		ExpressionAttributeValues: update_config.GetExpressionAttributeValues(),
 	})
 	return err
 }

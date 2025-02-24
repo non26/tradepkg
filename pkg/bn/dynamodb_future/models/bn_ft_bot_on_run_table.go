@@ -66,10 +66,10 @@ func (b *BnFtBotOnRunTable) GetPositionSideTableField() (string, reflect.Type) {
 	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetPositionConditionTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
-	return v, t
-}
+// func (b *BnFtBotOnRunTable) GetPositionConditionTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
+// 	return v, t
+// }
 
 func (b *BnFtBotOnRunTable) GetAmountQtyTableField() (string, reflect.Type) {
 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")

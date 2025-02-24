@@ -77,3 +77,11 @@ func (b *BnFtCryptoTable) GetCurrentLeverageTableField() (string, reflect.Type) 
 func (b *BnFtCryptoTable) Transform() {
 	b.Symbol = strings.ToUpper(b.Symbol)
 }
+
+func (b *BnFtCryptoTable) SetNextCounting(position_side string) {
+	if position_side == bnconstant.LONG {
+		b.SetCountingLong(b.GetCountingLong() + 1)
+	} else {
+		b.SetCountingShort(b.GetCountingShort() + 1)
+	}
+}

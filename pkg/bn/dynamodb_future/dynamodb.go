@@ -30,9 +30,10 @@ type IBnFtHistoryRepository interface {
 
 type IBnFtBotOnRunRepository interface {
 	Get(ctx context.Context, botOnRun *models.BnFtBotOnRun) (*models.BnFtBotOnRun, error)
-	Insert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
-	Update(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	// Insert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	// Update(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 	Delete(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	Upsert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 }
 
 type IBnFtBotRepository interface {
