@@ -2,6 +2,8 @@ package dynamodbfuture
 
 import (
 	"strconv"
+
+	bnconstant "github.com/non26/tradepkg/pkg/bn/bn_constant"
 )
 
 type BnFtCrypto struct {
@@ -38,6 +40,23 @@ func (b *BnFtCrypto) SetCountingLong(counting int64) {
 
 func (b *BnFtCrypto) SetCountingShort(counting int64) {
 	b.CountingShort = counting
+}
+
+func (b *BnFtCrypto) SetNextCountingBy(positionSide string) {
+	if positionSide == bnconstant.LONG {
+		b.CountingLong = b.GetNextCountingLong().Int()
+	} else if positionSide == bnconstant.SHORT {
+		b.CountingShort = b.GetNextCountingShort().Int()
+	}
+}
+
+func (b *BnFtCrypto) GetCountingBy(positionSide string) int64 {
+	if positionSide == bnconstant.LONG {
+		return b.CountingLong
+	} else if positionSide == bnconstant.SHORT {
+		return b.CountingShort
+	}
+	return 0
 }
 
 func (b *BnFtCrypto) GetSymbol() string {
