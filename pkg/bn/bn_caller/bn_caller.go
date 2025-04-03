@@ -35,6 +35,8 @@ type callBinance[Q any, P any] struct {
 	need_signature bool
 }
 
+// q = is the model for Binance request
+// p = is the model for Binance response
 func NewCallBinance[Q, P any](
 	http_request binancerequest.IBinanceServiceHttpRequest[Q],
 	http_response binanceresponse.IBinanceServiceHttpResponse[P],
@@ -56,6 +58,8 @@ func (c *callBinance[Q, P]) NeedSignature(need_signature bool) ICallBinance[Q, P
 	return c
 }
 
+// q = is the model for Binance request
+// p = is the model for Binance response
 func (c *callBinance[Q, P]) CallBinance(
 	request binancerequest.IBnFutureServiceRequest,
 	base_url string,
@@ -79,26 +83,27 @@ func (c *callBinance[Q, P]) CallBinance(
 		if err != nil {
 			return nil, err
 		}
-		c.http_request.AddHeader(api_key)
+		c.http_request.AddBnDefaultHeader(api_key)
 
 		switch method {
 		case http.MethodPost:
-			c.http_request.RequestPostMethod(signature)
+			c.http_request.RequestPostMethod()
 		default:
-			c.http_request.RequestGetMethod(signature)
+			c.http_request.RequestGetMethod()
 		}
+		c.http_request.SetQueryString(signature)
 	} else {
-		c.http_request.GetBinanceRequest().Method = http.MethodGet
+		c.http_request.RequestGetMethod()
 	}
 
 	c.http_client.SetClient(c.http_transport.GetTransport())
-	err = c.http_client.Do(c.http_request.GetBinanceRequest())
+	httpResponse, err := c.http_client.Do(c.http_request.GetBinanceRequest())
 	if err != nil {
 		return nil, err
 	}
 
-	c.http_response.SetResponse(c.http_client.GetBinanceHttpClientResponse())
-	err = c.http_response.DecodeBinanceServiceResponse(service_name)
+	c.http_response.SetResponse(httpResponse)
+	err = c.http_response.DecodeBinanceServiceResponse()
 	if err != nil {
 		return nil, err
 	}

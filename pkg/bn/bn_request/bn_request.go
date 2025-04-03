@@ -1,9 +1,7 @@
 package binancerequest
 
 import (
-	"io"
 	"net/http"
-	"strings"
 
 	"github.com/non26/tradepkg/pkg/bn/sign"
 )
@@ -11,10 +9,12 @@ import (
 type IBinanceServiceHttpRequest[T any] interface {
 	NewBinanceHttpRequest(url string) error
 	CreateRequestSignUrl(request *T, secretKey string) (string, error)
-	RequestPostMethod(signature string)
-	RequestGetMethod(signature string)
-	AddHeader(apiKey string)
+	RequestPostMethod()
+	RequestGetMethod()
+	AddBnDefaultHeader(apiKey string)
+	AddHeader(key, value string)
 	GetBinanceRequest() *http.Request
+	SetQueryString(queryString string)
 }
 
 type IBnFutureServiceRequest interface {
@@ -50,6 +50,7 @@ func (b *binanceServiceHttpRequest[T]) CreateRequestSignUrl(request *T, secretKe
 	// data := GetQueryStringFromStructType(request)
 	// sig := CreateBinanceSignature(&data, secretKey)
 	bnsign := sign.NewSignHMACSHA256[T]("", secretKey)
+	bnsign.Sign(request)
 	signature, err := bnsign.GetQueryStringBinanceSignature(request)
 	if err != nil {
 		return "", err
@@ -57,30 +58,44 @@ func (b *binanceServiceHttpRequest[T]) CreateRequestSignUrl(request *T, secretKe
 	return signature, nil
 }
 
-func (b *binanceServiceHttpRequest[T]) RequestPostMethod(signature string) {
+func (b *binanceServiceHttpRequest[T]) RequestPostMethod() {
 	b.req.Method = http.MethodPost
-	if signature != "" {
-		var body io.Reader = strings.NewReader(signature)
-		rc, ok := body.(io.ReadCloser)
-		if !ok {
-			rc = io.NopCloser(body)
-		}
-		b.req.Body = rc
-	}
+	// if signature != "" {
+	// 	var body io.Reader = strings.NewReader(signature)
+	// 	rc, ok := body.(io.ReadCloser)
+	// 	if !ok {
+	// 		rc = io.NopCloser(body)
+	// 	}
+	// 	b.req.Body = rc
+	// }
+	// if signature != "" {
+	// 	b.SetQueryString(signature)
+	// }
 }
 
-func (b *binanceServiceHttpRequest[T]) RequestGetMethod(signature string) {
+func (b *binanceServiceHttpRequest[T]) RequestGetMethod() {
 	b.req.Method = http.MethodGet
-	if signature != "" {
-		b.req.URL.RawQuery = signature
-	}
+	// if signature != "" {
+	// 	// b.req.URL.RawQuery = signature
+	// 	b.SetQueryString(signature)
+	// }
 }
 
-func (b *binanceServiceHttpRequest[T]) AddHeader(apiKey string) {
+func (b *binanceServiceHttpRequest[T]) AddBnDefaultHeader(apiKey string) {
 	b.req.Header.Add("X-MBX-APIKEY", apiKey)
 	b.req.Header.Add("CONTENT-TYPE", "application/x-www-form-urlencoded")
 }
 
+func (b *binanceServiceHttpRequest[T]) AddHeader(key, value string) {
+	b.req.Header.Add(key, value)
+}
+
 func (b *binanceServiceHttpRequest[T]) GetBinanceRequest() *http.Request {
 	return b.req
+}
+
+func (b *binanceServiceHttpRequest[T]) SetQueryString(queryString string) {
+	if queryString != "" {
+		b.req.URL.RawQuery = queryString
+	}
 }

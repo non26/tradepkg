@@ -2,7 +2,6 @@ package bnresponse
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 	"reflect"
@@ -13,7 +12,7 @@ import (
 
 type IBinanceServiceHttpResponse[R any] interface {
 	SetResponse(res *http.Response)
-	DecodeBinanceServiceResponse(binanceFutureServiceName string) error
+	DecodeBinanceServiceResponse() error
 	GetBinanceServiceResponse() *R
 	// TODO function to get error code
 }
@@ -32,25 +31,34 @@ func (b *binanceServiceHttpResponse[R]) SetResponse(res *http.Response) {
 	b.res = res
 }
 
-func (b *binanceServiceHttpResponse[R]) DecodeBinanceServiceResponse(
-	binanceFutureServiceName string,
-) error {
-	defer b.res.Body.Close()
+func (b *binanceServiceHttpResponse[R]) DecodeBinanceServiceResponse() error {
 	if b.res.StatusCode != http.StatusOK {
-		bnResponseError := new(models.ResponseBinanceFutureError)
-		json.NewDecoder(b.res.Body).Decode(bnResponseError)
-		if bnResponseError.Code == -2013 {
-			b.bnres = new(R)
-			return nil
-		}
-		msg := utils.FormatMessageOtherThanHttpStatus200(
-			binanceFutureServiceName,
-			b.res.StatusCode,
-			bnResponseError.Code,
-			bnResponseError.Message,
-		)
-		return errors.New(msg)
+		return b.binanceErrorResponse()
 	}
+	return b.binanceSuccessResponse()
+}
+
+func (b *binanceServiceHttpResponse[R]) GetBinanceServiceResponse() *R {
+	return b.bnres
+}
+
+func (b *binanceServiceHttpResponse[R]) binanceErrorResponse() error {
+	defer b.res.Body.Close()
+	bnResponseError := new(models.ResponseBinanceFutureError)
+	json.NewDecoder(b.res.Body).Decode(bnResponseError)
+	if bnResponseError.Code == -2013 {
+		b.bnres = new(R)
+		return nil
+	}
+	return utils.NewBinanceFail(
+		b.res.StatusCode,
+		bnResponseError.Code,
+		bnResponseError.Message,
+	)
+}
+
+func (b *binanceServiceHttpResponse[R]) binanceSuccessResponse() error {
+	defer b.res.Body.Close()
 	b.bnres = new(R)
 	// t := reflect.TypeOf(*b.bnres)
 	// _ = t
@@ -78,10 +86,5 @@ func (b *binanceServiceHttpResponse[R]) DecodeBinanceServiceResponse(
 		}
 		b.bnres = bnResponse
 	}
-
 	return nil
-}
-
-func (b *binanceServiceHttpResponse[R]) GetBinanceServiceResponse() *R {
-	return b.bnres
 }

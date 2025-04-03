@@ -5,14 +5,12 @@ import (
 )
 
 type IBinanceSerivceHttpClient interface {
-	Do(bnreq *http.Request) error
-	GetBinanceHttpClientResponse() *http.Response
+	Do(bnreq *http.Request) (*http.Response, error)
 	SetClient(t *http.Transport)
 }
 
 type binanceSerivceHttpClient struct {
-	client   *http.Client
-	response *http.Response
+	client *http.Client
 }
 
 func NewBinanceSerivceHttpClient() IBinanceSerivceHttpClient {
@@ -26,15 +24,10 @@ func (b *binanceSerivceHttpClient) SetClient(t *http.Transport) {
 	}
 }
 
-func (b *binanceSerivceHttpClient) Do(bnreq *http.Request) error {
+func (b *binanceSerivceHttpClient) Do(bnreq *http.Request) (*http.Response, error) {
 	res, err := b.client.Do(bnreq)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	b.response = res
-	return nil
-}
-
-func (b *binanceSerivceHttpClient) GetBinanceHttpClientResponse() *http.Response {
-	return b.response
+	return res, nil
 }
