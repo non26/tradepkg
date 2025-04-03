@@ -1,4 +1,4 @@
-package utils
+package appresponse
 
 var SuccessCode string = "0000"
 var FailCode string = "9999"
@@ -15,12 +15,12 @@ func NewCommonResponse(data interface{}) *CommonResponse {
 	}
 }
 
-func (c *CommonResponse) Fail(code string, message string) {
+func (c *CommonResponse) Fail(message string) {
 	c.Code = FailCode
 	c.Message = message
 }
 
-func (c *CommonResponse) Success(message string) {
+func (c *CommonResponse) Success() {
 	c.Code = SuccessCode
 	c.Message = "Success"
 }
