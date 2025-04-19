@@ -28,6 +28,12 @@ type IBnFtHistoryRepository interface {
 	Insert(ctx context.Context, history *models.BnFtHistory) error
 }
 
+type IBnFtAdvancedPositionRepository interface {
+	Get(ctx context.Context, clientId string) (*models.BnFtAdvancedPosition, error)
+	Upsert(ctx context.Context, advancedPosition *models.BnFtAdvancedPosition) error
+	Delete(ctx context.Context, clientId string) error
+}
+
 type IBnFtBotOnRunRepository interface {
 	Get(ctx context.Context, botOnRun *models.BnFtBotOnRun) (*models.BnFtBotOnRun, error)
 	// Insert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error

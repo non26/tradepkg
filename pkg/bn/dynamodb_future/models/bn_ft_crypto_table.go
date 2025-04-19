@@ -69,10 +69,10 @@ func (b *BnFtCryptoTable) GetCountingShortTableField() (string, reflect.Type) {
 	return v, t
 }
 
-func (b *BnFtCryptoTable) GetCurrentLeverageTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CurrentLeverage", "dynamodb")
-	return v, t
-}
+// func (b *BnFtCryptoTable) GetCurrentLeverageTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "CurrentLeverage", "dynamodb")
+// 	return v, t
+// }
 
 func (b *BnFtCryptoTable) Transform() {
 	b.Symbol = strings.ToUpper(b.Symbol)
