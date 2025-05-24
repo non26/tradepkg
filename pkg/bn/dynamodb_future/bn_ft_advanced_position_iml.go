@@ -56,7 +56,7 @@ func (d *bnFtAdvancedPositionRepository) Upsert(ctx context.Context, advancedPos
 	table.Transform()
 	update_config := dynamodbconfig.NewUpdateTable(advancedPosition)
 	update_config.Set(table.GetAmountBTableField, advancedPosition.AmountB)
-	update_config.Set(table.GetClientIDTableField, advancedPosition.ClientID)
+	// update_config.Set(table.GetClientIDTableField, advancedPosition.ClientID)
 	update_config.Set(table.GetPositionSideTableField, advancedPosition.PositionSide)
 	update_config.Set(table.GetSideTableField, advancedPosition.Side)
 	update_config.Set(table.GetSymbolTableField, advancedPosition.Symbol)
@@ -68,6 +68,7 @@ func (d *bnFtAdvancedPositionRepository) Upsert(ctx context.Context, advancedPos
 		ExpressionAttributeValues: update_config.GetExpressionAttributeValues(),
 	})
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 	return nil
