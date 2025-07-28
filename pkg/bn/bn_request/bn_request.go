@@ -11,7 +11,8 @@ type IBinanceServiceHttpRequest[T any] interface {
 	CreateRequestSignUrl(request *T, secretKey string) (string, error)
 	RequestPostMethod()
 	RequestGetMethod()
-	AddBnDefaultHeader(apiKey string)
+	AddBnDefaultFutureHeader(apiKey string)
+	AddBnDefaultSpotHeader(apiKey string)
 	AddHeader(key, value string)
 	GetBinanceRequest() *http.Request
 	SetQueryString(queryString string)
@@ -64,7 +65,12 @@ func (b *binanceServiceHttpRequest[T]) RequestGetMethod() {
 	b.req.Method = http.MethodGet
 }
 
-func (b *binanceServiceHttpRequest[T]) AddBnDefaultHeader(apiKey string) {
+func (b *binanceServiceHttpRequest[T]) AddBnDefaultFutureHeader(apiKey string) {
+	b.req.Header.Add("X-MBX-APIKEY", apiKey)
+	b.req.Header.Add("CONTENT-TYPE", "application/x-www-form-urlencoded")
+}
+
+func (b *binanceServiceHttpRequest[T]) AddBnDefaultSpotHeader(apiKey string) {
 	b.req.Header.Add("X-MBX-APIKEY", apiKey)
 	b.req.Header.Add("CONTENT-TYPE", "application/x-www-form-urlencoded")
 }

@@ -15,7 +15,6 @@ generic Q for requset model
 generic P for response model
 */
 type ICallBinance[Q, P any] interface {
-	NeedSignature(need_signature bool) ICallBinance[Q, P]
 	CallBinance(
 		request binancerequest.IBnFutureServiceRequest,
 		base_url string,
@@ -33,6 +32,8 @@ type callBinance[Q any, P any] struct {
 	http_transport binanetransport.IBinanceServiceHttpTransport
 	http_client    binanceclient.IBinanceSerivceHttpClient
 	need_signature bool
+	future         bool
+	spot           bool
 }
 
 // q = is the model for Binance request
@@ -42,20 +43,23 @@ func NewCallBinance[Q, P any](
 	http_response binanceresponse.IBinanceServiceHttpResponse[P],
 	http_transport binanetransport.IBinanceServiceHttpTransport,
 	http_client binanceclient.IBinanceSerivceHttpClient,
+	need_signature bool,
+	future bool,
+	spot bool,
 ) ICallBinance[Q, P] {
+	if future && spot {
+		panic("future and spot cannot be true at the same time")
+	}
 	c := callBinance[Q, P]{
 		http_request,
 		http_response,
 		http_transport,
 		http_client,
-		true,
+		need_signature,
+		future,
+		spot,
 	}
 	return &c
-}
-
-func (c *callBinance[Q, P]) NeedSignature(need_signature bool) ICallBinance[Q, P] {
-	c.need_signature = need_signature
-	return c
 }
 
 // q = is the model for Binance request
@@ -83,7 +87,11 @@ func (c *callBinance[Q, P]) CallBinance(
 		if err != nil {
 			return nil, err
 		}
-		c.http_request.AddBnDefaultHeader(api_key)
+		if c.future {
+			c.http_request.AddBnDefaultFutureHeader(api_key)
+		} else if c.spot {
+			c.http_request.AddBnDefaultSpotHeader(api_key)
+		}
 
 		switch method {
 		case http.MethodPost:

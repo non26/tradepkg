@@ -69,7 +69,6 @@ func TestCreateQueryStringFrom(t *testing.T) {
 			Symbol2: TestModel_1{Symbol: "BTCUSDT", Price: 9000},
 			Price:   9000,
 		}
-		// expected := "price=9000&symbol=BTCUSDT&symbol2={\"symbol\":\"BTCUSDT\",\"price\":9000}"
 		expected := "price=9000&symbol=BTCUSDT&symbol2=%7BBTCUSDT+9000%7D"
 		actual := utils.CreateQueryStringFrom(&model)
 		assert.Equal(t, expected, actual)

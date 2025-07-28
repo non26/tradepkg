@@ -22,5 +22,5 @@ func NewBinanceFail(httpStatus int, bnCode int, bnMessage string) *BinanceFail {
 }
 
 func (b *BinanceFail) Error() string {
-	return fmt.Sprintf("http:%v,BnCode:%v,BnMsg:%v", b.HttpStatus, b.BnCode, b.BnMessage)
+	return fmt.Sprintf("BnHttp:%v,BnCode:%v,BnMsg:%v", b.HttpStatus, b.BnCode, b.BnMessage)
 }

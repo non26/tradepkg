@@ -15,30 +15,7 @@ func CreateQueryStringFrom[T any](m *T, except_fields ...string) string {
 		field := st.Field(i).Tag.Get("json")
 		if !slices.Contains(except_fields, field) {
 			value := v.FieldByIndex([]int{i})
-			// if value.Kind() == reflect.String {
-			// 	q.Add(field, value.String())
-			// 	continue
-			// }
-			// if value.Kind() == reflect.Int64 {
-			// 	q.Add(field, fmt.Sprintf("%d", value.Int()))
-			// 	continue
-			// }
 			q.Add(field, fmt.Sprintf("%v", value.Interface()))
-
-			// if value.Kind() == reflect.Slice {
-			// 	q.Add(field, fmt.Sprintf("%v", value.Interface()))
-			// 	continue
-			// }
-			// if value.Kind() == reflect.Slice {
-			// 	for j := 0; j < value.Len(); j++ {
-			// 		q.Add(field, fmt.Sprintf("%v", value.Index(j).Interface()))
-			// 	}
-			// 	continue
-			// }
-			// if value.Kind() == reflect.Struct {
-			// 	q.Add(field, fmt.Sprintf("%v", value.Interface()))
-			// 	continue
-			// }
 		}
 	}
 	return q.Encode()
