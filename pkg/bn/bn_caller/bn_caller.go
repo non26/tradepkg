@@ -22,7 +22,6 @@ type ICallBinance[Q, P any] interface {
 		method string,
 		secret_key string,
 		api_key string,
-		service_name string,
 	) (*P, error)
 }
 
@@ -71,7 +70,6 @@ func (c *callBinance[Q, P]) CallBinance(
 	method string,
 	secret_key string,
 	api_key string,
-	service_name string,
 ) (*P, error) {
 
 	err := c.http_request.NewBinanceHttpRequest(fmt.Sprintf("%v%v", base_url, end_point))
