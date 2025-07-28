@@ -60,13 +60,7 @@ func (b *binanceServiceHttpResponse[R]) binanceErrorResponse() error {
 func (b *binanceServiceHttpResponse[R]) binanceSuccessResponse() error {
 	defer b.res.Body.Close()
 	b.bnres = new(R)
-	// t := reflect.TypeOf(*b.bnres)
-	// _ = t
-	// k := t.Kind()
-	// _ = k
-	// switch any(*b.bnres).(type) {
 	switch reflect.TypeOf(*b.bnres).Kind() {
-	// case reflect.Struct:
 	case reflect.Slice:
 		bnResponse := new(R)
 		bodyBytes, err := io.ReadAll(b.res.Body)

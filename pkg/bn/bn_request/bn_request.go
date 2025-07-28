@@ -18,7 +18,7 @@ type IBinanceServiceHttpRequest[T any] interface {
 }
 
 type IBnFutureServiceRequest interface {
-	PrepareRequest()
+	PrepareRequest() // validate field before send to binance ,for example, convert to upper/lower case
 	GetData() interface{}
 }
 
@@ -47,8 +47,6 @@ func (b *binanceServiceHttpRequest[T]) NewBinanceHttpRequest(
 }
 
 func (b *binanceServiceHttpRequest[T]) CreateRequestSignUrl(request *T, secretKey string) (string, error) {
-	// data := GetQueryStringFromStructType(request)
-	// sig := CreateBinanceSignature(&data, secretKey)
 	bnsign := sign.NewSignHMACSHA256[T]("", secretKey)
 	bnsign.Sign(request)
 	signature, err := bnsign.GetQueryStringBinanceSignature(request)
@@ -60,25 +58,10 @@ func (b *binanceServiceHttpRequest[T]) CreateRequestSignUrl(request *T, secretKe
 
 func (b *binanceServiceHttpRequest[T]) RequestPostMethod() {
 	b.req.Method = http.MethodPost
-	// if signature != "" {
-	// 	var body io.Reader = strings.NewReader(signature)
-	// 	rc, ok := body.(io.ReadCloser)
-	// 	if !ok {
-	// 		rc = io.NopCloser(body)
-	// 	}
-	// 	b.req.Body = rc
-	// }
-	// if signature != "" {
-	// 	b.SetQueryString(signature)
-	// }
 }
 
 func (b *binanceServiceHttpRequest[T]) RequestGetMethod() {
 	b.req.Method = http.MethodGet
-	// if signature != "" {
-	// 	// b.req.URL.RawQuery = signature
-	// 	b.SetQueryString(signature)
-	// }
 }
 
 func (b *binanceServiceHttpRequest[T]) AddBnDefaultHeader(apiKey string) {
