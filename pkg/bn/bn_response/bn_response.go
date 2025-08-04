@@ -5,9 +5,6 @@ import (
 	"io"
 	"net/http"
 	"reflect"
-
-	models "github.com/non26/tradepkg/pkg/bn/bn_response/models"
-	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
 type IBinanceServiceHttpResponse[R any] interface {
@@ -32,32 +29,34 @@ func (b *binanceServiceHttpResponse[R]) SetResponse(res *http.Response) {
 }
 
 func (b *binanceServiceHttpResponse[R]) DecodeBinanceServiceResponse() error {
-	if b.res.StatusCode != http.StatusOK {
-		return b.binanceErrorResponse()
-	}
-	return b.binanceSuccessResponse()
+	// if b.res.StatusCode != http.StatusOK {
+	// 	return b.binanceErrorResponse()
+	// }
+	// return b.binanceSuccessResponse()
+	return b.binanceResponse()
 }
 
 func (b *binanceServiceHttpResponse[R]) GetBinanceServiceResponse() *R {
 	return b.bnres
 }
 
-func (b *binanceServiceHttpResponse[R]) binanceErrorResponse() error {
-	defer b.res.Body.Close()
-	bnResponseError := new(models.ResponseBinanceFutureError)
-	json.NewDecoder(b.res.Body).Decode(bnResponseError)
-	if bnResponseError.Code == -2013 {
-		b.bnres = new(R)
-		return nil
-	}
-	return utils.NewBinanceFail(
-		b.res.StatusCode,
-		bnResponseError.Code,
-		bnResponseError.Message,
-	)
-}
+// func (b *binanceServiceHttpResponse[R]) binanceErrorResponse() error {
+// 	defer b.res.Body.Close()
+// 	bnResponseError := new(models.ResponseBinanceFutureError)
+// 	json.NewDecoder(b.res.Body).Decode(bnResponseError)
+// 	if bnResponseError.Code == -2013 {
+// 		b.bnres = new(R)
+// 		return nil
+// 	}
+// 	return utils.NewBinanceFail(
+// 		b.res.StatusCode,
+// 		bnResponseError.Code,
+// 		bnResponseError.Message,
+// 	)
+// }
 
-func (b *binanceServiceHttpResponse[R]) binanceSuccessResponse() error {
+// func (b *binanceServiceHttpResponse[R]) binanceSuccessResponse() error {
+func (b *binanceServiceHttpResponse[R]) binanceResponse() error {
 	defer b.res.Body.Close()
 	b.bnres = new(R)
 	switch reflect.TypeOf(*b.bnres).Kind() {
