@@ -81,6 +81,20 @@ func (b *BnFtBotOnRunTable) GetIsActiveTableField() (string, reflect.Type) {
 	return v, t
 }
 
+func (b *BnFtBotOnRunTable) GetAccountIdTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AccountId", "dynamodb")
+	return v, t
+}
+
+func (b *BnFtBotOnRunTable) GetSettingTableField() (string, reflect.Type) {
+	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Setting", "dynamodb")
+	return v, t
+}
+
+func (b *BnFtBotOnRunTable) SetSetting(setting []byte) {
+	b.Setting = string(setting)
+}
+
 func (b *BnFtBotOnRunTable) Transform() {
 	b.Symbol = strings.ToUpper(b.Symbol)
 	b.PositionSide = strings.ToUpper(b.PositionSide)

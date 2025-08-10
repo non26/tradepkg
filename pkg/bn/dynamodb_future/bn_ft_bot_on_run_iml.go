@@ -96,6 +96,8 @@ func (d *bnFtBotOnRunRepository) Upsert(ctx context.Context, botOnRun *models.Bn
 	update_config.Set(table.GetPositionSideTableField, botOnRun.PositionSide)
 	update_config.Set(table.GetAmountQtyTableField, botOnRun.AmountB)
 	update_config.Set(table.GetIsActiveTableField, botOnRun.IsActive)
+	update_config.Set(table.GetAccountIdTableField, botOnRun.AccountId)
+	update_config.Set(table.GetSettingTableField, botOnRun.Setting)
 	expression := update_config.BuildExpression()
 	_, err := d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName:                 aws.String(table.GetTableName()),
