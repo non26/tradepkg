@@ -91,10 +91,6 @@ func (b *BnFtBotOnRunTable) GetSettingTableField() (string, reflect.Type) {
 	return v, t
 }
 
-func (b *BnFtBotOnRunTable) SetSetting(setting []byte) {
-	b.Setting = string(setting)
-}
-
 func (b *BnFtBotOnRunTable) Transform() {
 	b.Symbol = strings.ToUpper(b.Symbol)
 	b.PositionSide = strings.ToUpper(b.PositionSide)

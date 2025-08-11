@@ -19,3 +19,7 @@ func NewBinanceFutureBotOnRun() *BnFtBotOnRun {
 func (b *BnFtBotOnRun) IsFound() bool {
 	return b.BotID != "" && b.BotOrderID != ""
 }
+
+func (b *BnFtBotOnRun) SetSetting(setting []byte) {
+	b.Setting = string(setting)
+}
