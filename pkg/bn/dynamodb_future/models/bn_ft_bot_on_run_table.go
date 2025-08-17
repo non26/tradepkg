@@ -2,7 +2,6 @@ package dynamodbfuture
 
 import (
 	"reflect"
-	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/non26/tradepkg/pkg/bn/utils"
@@ -56,42 +55,37 @@ func (b *BnFtBotOnRunTable) GetBotOrderIDTableField() (string, reflect.Type) {
 	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetSymbolTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
-	return v, t
-}
-
-func (b *BnFtBotOnRunTable) GetPositionSideTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
-	return v, t
-}
-
-// func (b *BnFtBotOnRunTable) GetPositionConditionTableField() (string, reflect.Type) {
-// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
+// func (b *BnFtBotOnRunTable) GetSymbolTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Symbol", "dynamodb")
 // 	return v, t
 // }
 
-func (b *BnFtBotOnRunTable) GetAmountQtyTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
-	return v, t
-}
+// func (b *BnFtBotOnRunTable) GetPositionSideTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionSide", "dynamodb")
+// 	return v, t
+// }
 
-func (b *BnFtBotOnRunTable) GetIsActiveTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "IsActive", "dynamodb")
-	return v, t
-}
+// // func (b *BnFtBotOnRunTable) GetPositionConditionTableField() (string, reflect.Type) {
+// // 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "PositionCondition", "dynamodb")
+// // 	return v, t
+// // }
+
+// func (b *BnFtBotOnRunTable) GetAmountQtyTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AmountB", "dynamodb")
+// 	return v, t
+// }
 
 func (b *BnFtBotOnRunTable) GetAccountIdTableField() (string, reflect.Type) {
 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "AccountId", "dynamodb")
 	return v, t
 }
 
-func (b *BnFtBotOnRunTable) GetSettingTableField() (string, reflect.Type) {
-	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Setting", "dynamodb")
-	return v, t
-}
+// func (b *BnFtBotOnRunTable) GetSettingTableField() (string, reflect.Type) {
+// 	v, t, _ := utils.GetStructTagValueByField(reflect.TypeOf(b).Elem(), "Setting", "dynamodb")
+// 	return v, t
+// }
 
-func (b *BnFtBotOnRunTable) Transform() {
-	b.Symbol = strings.ToUpper(b.Symbol)
-	b.PositionSide = strings.ToUpper(b.PositionSide)
-}
+// func (b *BnFtBotOnRunTable) Transform() {
+// 	b.Symbol = strings.ToUpper(b.Symbol)
+// 	b.PositionSide = strings.ToUpper(b.PositionSide)
+// }

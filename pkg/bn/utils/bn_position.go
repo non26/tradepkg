@@ -33,11 +33,11 @@ func IsSellPosition(side string, position_side string) bool {
 }
 
 func IsLongPosition(position_side string) bool {
-	return position_side == constant.LONG
+	return strings.ToUpper(position_side) == constant.LONG
 }
 
 func IsShortPosition(position_side string) bool {
-	return position_side == constant.SHORT
+	return strings.ToUpper(position_side) == constant.SHORT
 }
 
 func ToSellSideBy(position_side string) string {

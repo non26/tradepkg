@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	dynamodbconfig "github.com/non26/tradepkg/pkg/bn/dynamodb_config"
 	models "github.com/non26/tradepkg/pkg/bn/dynamodb_future/models"
 )
@@ -34,12 +35,14 @@ func (d *bnFtBotOnRunRepository) Get(ctx context.Context, botOnRun *models.BnFtB
 	if err != nil {
 		return nil, err
 	}
+	// if !result.IsFound() {
+	// 	return nil, nil
+	// }
 	return &result, nil
 }
 
 func (d *bnFtBotOnRunRepository) Insert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error {
 	table := models.NewBinanceFutureBotOnRunTable(botOnRun)
-	table.Transform()
 	item, err := attributevalue.MarshalMap(table.GetData())
 	if err != nil {
 		return err
@@ -90,14 +93,8 @@ func (d *bnFtBotOnRunRepository) Delete(ctx context.Context, botOnRun *models.Bn
 
 func (d *bnFtBotOnRunRepository) Upsert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error {
 	table := models.NewBinanceFutureBotOnRunTable(botOnRun)
-	table.Transform()
 	update_config := dynamodbconfig.NewUpdateTable(botOnRun)
-	update_config.Set(table.GetSymbolTableField, botOnRun.Symbol)
-	update_config.Set(table.GetPositionSideTableField, botOnRun.PositionSide)
-	update_config.Set(table.GetAmountQtyTableField, botOnRun.AmountB)
-	update_config.Set(table.GetIsActiveTableField, botOnRun.IsActive)
 	update_config.Set(table.GetAccountIdTableField, botOnRun.AccountId)
-	update_config.Set(table.GetSettingTableField, botOnRun.Setting)
 	expression := update_config.BuildExpression()
 	_, err := d.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
 		TableName:                 aws.String(table.GetTableName()),
@@ -106,4 +103,47 @@ func (d *bnFtBotOnRunRepository) Upsert(ctx context.Context, botOnRun *models.Bn
 		ExpressionAttributeValues: update_config.GetExpressionAttributeValues(),
 	})
 	return err
+}
+
+func (d *bnFtBotOnRunRepository) GetAll(ctx context.Context) ([]models.BnFtBotOnRun, error) {
+	table := models.NewBinanceFutureBotOnRunTable(nil)
+	response, err := d.client.Scan(ctx, &dynamodb.ScanInput{
+		TableName: aws.String(table.GetTableName()),
+	})
+	if err != nil {
+		return nil, err
+	}
+	items := []models.BnFtBotOnRun{}
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &items)
+	if err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+func (d *bnFtBotOnRunRepository) ScanWith(ctx context.Context, clientId string) ([]models.BnFtBotOnRun, error) {
+	table := models.NewBinanceFutureBotOnRunTable(nil)
+	response, err := d.client.Scan(ctx, &dynamodb.ScanInput{
+		TableName: aws.String(table.GetTableName()),
+		// Optional: Add a filter expression
+		FilterExpression: aws.String("contains(#bot_order_id, :value)"),
+		ExpressionAttributeNames: map[string]string{
+			"#bot_order_id": "bot_order_id", // Field name in DynamoDB table
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":value": &types.AttributeValueMemberS{Value: clientId}, // Filter condition
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(response.Items) == 0 {
+		return nil, nil
+	}
+	items := []models.BnFtBotOnRun{}
+	err = attributevalue.UnmarshalListOfMaps(response.Items, &items)
+	if err != nil {
+		return nil, err
+	}
+	return items, nil
 }

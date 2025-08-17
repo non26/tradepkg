@@ -38,8 +38,17 @@ type IBnFtBotOnRunRepository interface {
 	Get(ctx context.Context, botOnRun *models.BnFtBotOnRun) (*models.BnFtBotOnRun, error)
 	Delete(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
 	Upsert(ctx context.Context, botOnRun *models.BnFtBotOnRun) error
+	GetAll(ctx context.Context) ([]models.BnFtBotOnRun, error)
+	ScanWith(ctx context.Context, clientId string) ([]models.BnFtBotOnRun, error)
 }
 
 type IBnFtBotRepository interface {
 	Get(ctx context.Context, botID string) (*models.BnFtBot, error)
+}
+
+type IBnFtBotRegistorRepository interface {
+	Get(ctx context.Context, botID string, botOrderID string) (*models.BnFtBotRegistor, error)
+	Upsert(ctx context.Context, botRegistor *models.BnFtBotRegistor) error
+	GetAll(ctx context.Context) ([]models.BnFtBotRegistor, error)
+	Delete(ctx context.Context, botID string, botOrderID string) error
 }
