@@ -52,11 +52,13 @@ func (d *bnFtOpeningPositionRepository) GetAll(ctx context.Context) (map[string]
 	return openOrders, nil
 }
 
-func (d *bnFtOpeningPositionRepository) Get(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error) {
+func (d *bnFtOpeningPositionRepository) Get(ctx context.Context, symbol string, positionSide string) (*models.BnFtOpeningPosition, error) {
 	var err error
 	var response *dynamodb.GetItemOutput
 	result := &models.BnFtOpeningPosition{}
-	table := models.NewBinanceFutureOpeningPositionTableWith(data)
+	table := models.NewBinanceFutureOpeningPositionTable()
+	table.Symbol = symbol
+	table.PositionSide = positionSide
 	response, err = d.client.GetItem(ctx, &dynamodb.GetItemInput{
 		TableName: aws.String(table.GetTableName()),
 		Key:       table.GetKeyByPositionSideAndSymbol(),

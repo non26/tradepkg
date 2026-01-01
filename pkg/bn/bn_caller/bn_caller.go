@@ -8,6 +8,7 @@ import (
 	binancerequest "github.com/non26/tradepkg/pkg/bn/bn_request"
 	binanceresponse "github.com/non26/tradepkg/pkg/bn/bn_response"
 	binanetransport "github.com/non26/tradepkg/pkg/bn/bn_transport"
+	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
 /*
@@ -99,6 +100,8 @@ func (c *callBinance[Q, P]) CallBinance(
 		}
 		c.http_request.SetQueryString(signature)
 	} else {
+		queryString := utils.CreateQueryStringFrom(data)
+		c.http_request.SetQueryString(queryString)
 		c.http_request.RequestGetMethod()
 	}
 

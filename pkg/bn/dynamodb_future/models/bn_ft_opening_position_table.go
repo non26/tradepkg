@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	bntime "github.com/non26/tradepkg/pkg/bn/bn_time"
 	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
@@ -34,7 +35,7 @@ func (b *BnFtOpeningPositionTable) GetTableName() string {
 }
 
 func (b *BnFtOpeningPositionTable) SetCreatedAt() {
-	b.CreatedAt = utils.GetDBTime()
+	b.CreatedAt = bntime.GetDBTime()
 }
 
 func (b *BnFtOpeningPositionTable) GetSymbolTableField() (string, reflect.Type) {

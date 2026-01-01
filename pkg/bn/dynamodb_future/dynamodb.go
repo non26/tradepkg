@@ -8,7 +8,7 @@ import (
 
 type IBnFtOpeningPositionRepository interface {
 	GetAll(ctx context.Context) (map[string]*models.BnFtOpeningPosition, error)
-	Get(ctx context.Context, data *models.BnFtOpeningPosition) (*models.BnFtOpeningPosition, error)
+	Get(ctx context.Context, symbol string, positionSide string) (*models.BnFtOpeningPosition, error)
 	ScanWith(ctx context.Context, clientId string) (*models.BnFtOpeningPosition, error)
 	Insert(ctx context.Context, openOrder *models.BnFtOpeningPosition) error
 	UpdateAmountB(ctx context.Context, openOrder *models.BnFtOpeningPosition) error

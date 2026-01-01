@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	bntime "github.com/non26/tradepkg/pkg/bn/bn_time"
 	"github.com/non26/tradepkg/pkg/bn/utils"
 )
 
@@ -65,5 +66,5 @@ func (b *BnFtHistoryTable) Transform() {
 }
 
 func (b *BnFtHistoryTable) SetCreatedAt() {
-	b.CreatedAt = utils.GetDBTime()
+	b.CreatedAt = bntime.GetDBTime()
 }

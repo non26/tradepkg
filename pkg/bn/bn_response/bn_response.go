@@ -77,7 +77,7 @@ func (b *binanceServiceHttpResponse[R]) binanceResponse() error {
 		if err != nil {
 			return err
 		}
-		b.bnres = bnResponse
+		b.bnres = new(R)
 	}
 	return nil
 }

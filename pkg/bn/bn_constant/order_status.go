@@ -1,0 +1,4 @@
+package bnconstant
+
+var ORDER_STATUS_PENDING = "PENDING"
+var ORDER_STATUS_FILLED = "FILLED"
