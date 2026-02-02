@@ -1,6 +1,9 @@
 package appresponse
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
+)
 
 // general success
 var SuccessCode string = "0000"
@@ -30,6 +33,25 @@ var NotFoundOpeningPositionErrorMessage string = "Not found opening position"
 var SubAccountNotRegisteredErrorCode string = "9004"
 var SubAccountNotRegisteredErrorMessage string = "Sub account not registered"
 
+// found current position error
+var FoundCurrentPositionErrorCode string = "9005"
+var FoundCurrentPositionErrorMessage string = "Found current position"
+
+var NotFoundAdvancedPositionErrorCode string = "9006"
+var NotFoundAdvancedPositionErrorMessage string = "Not found advanced position"
+
+var PositionSideErrorMismatchedCode string = "9007"
+var PositionSideErrorMismatchedMessage string = "Position side error mismatch"
+
+var EXCEEDMAXACCUMULATIONCODE string = "9008"
+var EXCEEDMAXACCUMULATIONMESSAGE string = "Exceed max accumulation"
+
+var NOTFOUNDACCUMLATIONCODE string = "9009"
+var NOTFOUNDACCUMLATIONMESSAGE string = "Not found accumulation"
+
+var NOTFOUNDCLIENTIDCODE string = "9010"
+var NOTFOUNDCLIENTIDMESSAGE string = "Not found client id"
+
 type AppResponse struct {
 	Code    string      `json:"code"`
 	Message string      `json:"message"`
@@ -43,4 +65,8 @@ func NewAppResponse(code string, message string, data interface{}) *AppResponse 
 
 func (a *AppResponse) SendResponse(httpStatus int, c echo.Context) error {
 	return c.JSON(httpStatus, a)
+}
+
+func (a *AppResponse) SendGinResponse(httpStatus int, c *gin.Context) {
+	c.JSON(httpStatus, a)
 }

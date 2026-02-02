@@ -111,6 +111,12 @@ func (c *callBinance[Q, P]) CallBinance(
 		return nil, err
 	}
 
+	// body, err := io.ReadAll(httpResponse.Body)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// fmt.Println(string(body))
+
 	c.http_response.SetResponse(httpResponse)
 	err = c.http_response.DecodeBinanceServiceResponse()
 	if err != nil {

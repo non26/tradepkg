@@ -50,6 +50,7 @@ func (u *UpdateTableAt[T]) BuildExpression() *string {
 	return aws.String("set " + strings.Join(u.updateExpression, ", "))
 }
 
+// don't set key
 func (u *UpdateTableAt[T]) Set(field func() (string, reflect.Type), to_value any) *UpdateTableAt[T] {
 	_field, of_type := field()
 	u.setExpression(_field)
