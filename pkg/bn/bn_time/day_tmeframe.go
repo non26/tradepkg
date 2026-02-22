@@ -6,15 +6,15 @@ import (
 )
 
 func GetBinanceStartAndEndTimeInDayTimeFrame(number string) (start time.Time, end time.Time) {
-	numberInt, err := strconv.Atoi(number)
-	if err != nil {
-		return time.Time{}, time.Time{}
-	}
+	// numberInt, err := strconv.Atoi(number)
+	// if err != nil {
+	// 	return time.Time{}, time.Time{}
+	// }
 
 	targetTime := time.Now().UTC()
 
-	start = time.Date(targetTime.Year(), targetTime.Month(), targetTime.Day()-numberInt, 0, 0, 0, 0, time.UTC)
-	end = time.Date(targetTime.Year(), targetTime.Month(), targetTime.Day()-numberInt, 23, 59, 59, 59, time.UTC)
+	start = time.Date(targetTime.Year(), targetTime.Month(), targetTime.Day(), 0, 0, 0, 0, time.UTC)
+	end = time.Date(targetTime.Year(), targetTime.Month(), targetTime.Day(), 23, 59, 59, 59, time.UTC)
 
 	return start, end
 }
